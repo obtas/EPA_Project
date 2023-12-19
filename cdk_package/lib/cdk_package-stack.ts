@@ -23,8 +23,8 @@ export class CdkPackageStack extends Stack {
         super(scope, id, props);
 
         //  dynamo table
-        const table = new ddb.Table(this, 'qwizgurus_interview_table', {
-            tableName: 'qwizgurus_interview_table',
+        const table = new ddb.Table(this, 'qwizgurus_interview_table_uswest2', {
+            tableName: 'qwizgurus_interview_table_uswest2',
             partitionKey: {
                 name: 'level',
                 type: ddb.AttributeType.STRING,
@@ -42,12 +42,6 @@ export class CdkPackageStack extends Stack {
             code: lambda.Code.fromAsset(path.join(__dirname, 'lambdaHandler')),
         });
 
-        // const version = getFunction.currentVersion;
-        // const alias = new lambda.Alias(this, 'GetFunctionLambdaAlias', {
-        //     aliasName: 'Prod',
-        //     version,
-        // });
-
         if (getFunction.role === null) {
             throw new Error('Lambda function role cannot be null');
         }
@@ -59,10 +53,10 @@ export class CdkPackageStack extends Stack {
         table.grantReadWriteData(getFunction)
 
         // lambda write interview question data
-        const putFunction = new lambda.Function(this, 'postFunction', {
+        const putFunction = new lambda.Function(this, 'putFunction', {
             runtime: lambda.Runtime.NODEJS_18_X,
-            handler: 'index.handler',
-            code: lambda.Code.fromAsset(path.join(__dirname, 'post-lambda-handler')),
+            handler: 'put_index.handler',
+            code: lambda.Code.fromAsset(path.join(__dirname, 'lambdaHandler')),
         });
 
         //const post_version = getFunction.currentVersion;
@@ -81,7 +75,7 @@ export class CdkPackageStack extends Stack {
 
         table.grantReadWriteData(putFunction)
 
-        const bucket = new s3.Bucket(this, 'epa-bucket', {
+        const bucket = new s3.Bucket(this, 'samilafo-qwizgurus-bucket', {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         });
 
@@ -96,8 +90,8 @@ export class CdkPackageStack extends Stack {
 
         bucket.grantRead(oai);
 
-        const api = new apigateway.RestApi(this, 'epa-api', {
-            restApiName: 'epa-api',
+        const api = new apigateway.RestApi(this, 'samilafo-qg-api', {
+            restApiName: 'samilafo-qg-api',
             // defaultCorsPreflightOptions: {
             //     allowOrigins: ["https://qwiz.YOUR_ALIAS.people.aws.dev"],
             //     allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
