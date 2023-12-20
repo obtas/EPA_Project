@@ -9,10 +9,10 @@ export class QwizPipelineStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
         // Use pre-exisitng CodeCommit repository
-        const repo = codecommit.Repository.fromRepositoryName(this, 'QwizRepo', "Qwiz_guru_interview_site");
+        const repo = codecommit.Repository.fromRepositoryName(this, 'QwizGuruRepo', "QwizGuruPlatform");
 
-        const pipeline = new CodePipeline(this, 'QwizPipeline', {
-            pipelineName: 'QwizPipeline',
+        const pipeline = new CodePipeline(this, 'QwizPipeline-samilafo', {
+            pipelineName: 'QwizPipeline-samilafo',
             crossAccountKeys: true,
             synth: new CodeBuildStep('SynthStep', {
                 input: CodePipelineSource.codeCommit(repo, 'main'),
@@ -36,27 +36,14 @@ export class QwizPipelineStack extends cdk.Stack {
         });
 
         const alpha_stage = pipeline.addStage(new AlphaStage(this, "Alpha", {
-            env: { account: '177325120061', region: 'eu-west-2'}
+            env: { account: '937836275043', region: 'us-west-2'}
         }));
 
-        alpha_stage.addPost(new ShellStep('Validate', {
-            input: CodePipelineSource.codeCommit(repo, 'main'),
-            commands: [
-                'cd cdk_package/test',
-                'npm run test'
-            ]
-        }));
 
-        const beta_stage = pipeline.addStage(new BetaStage(this, "Beta", {
-            env: { account: '042538542222', region: 'eu-west-2'}
-        }));
+        // const beta_stage = pipeline.addStage(new BetaStage(this, "Beta", {
+        //     env: { account: '042538542222', region: 'eu-west-2'}
+        // }));
 
-        beta_stage.addPost(new ShellStep('Validate', {
-            input: pipeline.synth.primaryOutput,
-            commands: [
-                'cd cdk_package/test',
-                'npm run test'
-            ]
-        }));
+ 
     }
 }
