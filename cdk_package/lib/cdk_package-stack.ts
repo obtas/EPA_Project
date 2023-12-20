@@ -307,7 +307,7 @@ export class CdkPackageStack extends Stack {
             snsTopic: topic,
             sendToCloudWatchLogs: true,
             cloudWatchLogsRetention: logs.RetentionDays.FOUR_MONTHS,
-            trailName: 'Qwiz-Events',
+            trailName: 'samilafo-Qwiz-Events',
             encryptionKey: key
         });
     };
