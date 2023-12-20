@@ -86,7 +86,7 @@ export class CdkPackageStack extends Stack {
         //     exposedHeaders: ["Access-Control-Allow-Origin"]
         // })
 
-        const oai = new cloudfront.OriginAccessIdentity(this, 'epa-oai');
+        const oai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwizguru-oai');
 
         bucket.grantRead(oai);
 
@@ -213,7 +213,7 @@ export class CdkPackageStack extends Stack {
 
         //bucket.grantRead(oai);
 
-        const distribution = new cloudfront.Distribution(this, 'epa_cloudfront', {
+        const distribution = new cloudfront.Distribution(this, 'samilafo_qwizguru_cloudfront', {
             defaultBehavior: {
                 origin: new origin.S3Origin(bucket, {
                     originAccessIdentity: oai,
