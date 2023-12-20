@@ -102,6 +102,16 @@ export class CdkPackageStack extends Stack {
         const putlambdaintegration = new apigateway.LambdaIntegration(putFunction);
         const getlambdaintegration = new apigateway.LambdaIntegration(getFunction);
 
+        // Supernova role
+        new iam.Role(this, "SuperNovaRole", {
+            roleName: "Nova-DO-NOT-DELETE",
+            assumedBy: new iam.ServicePrincipal("nova.aws.internal"),
+            managedPolicies: [
+                iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonRoute53FullAccess"),
+                iam.ManagedPolicy.fromAwsManagedPolicyName("SecurityAudit")
+            ]
+        });
+
         // input your own domain name here. 
         // const hosted_zone_name = 'alias-here.people.aws.dev'
 
