@@ -10,7 +10,7 @@ test('DynamoDB table created', () => {
   const template = Template.fromStack(stack);
 
   template.hasResourceProperties('AWS::DynamoDB::Table', {
-    TableName: 'qwizgurus_interview_table'
+    TableName: 'qwizgurus_interview_table_uswest2'
   });
   template.resourceCountIs('AWS::DynamoDB::Table', 1);
 });
@@ -23,11 +23,11 @@ test('Lambda functions created',  ()=> {
   const template = Template.fromStack(stack);
 
   template.hasResourceProperties('AWS::Lambda::Function', {
-    Handler: 'index.handler'
+    Handler: 'get_index.handler'
   });
 
   template.hasResourceProperties('AWS::Lambda::Function', {
-    Handler: 'get_index.handler'
+    Handler: 'put_index.handler'
   });
   template.resourceCountIs('AWS::Lambda::Function', 2);
 })
@@ -50,7 +50,7 @@ test('API Gateway created', () => {
   const template = Template.fromStack(stack);
 
   template.hasResourceProperties('AWS::ApiGateway::RestApi', {
-    Name: 'epa-api'
+    Name: 'samilafo-qg-api'
   });
   template.resourceCountIs('AWS::ApiGateway::RestApi', 1);
 });
@@ -96,7 +96,7 @@ test('CloudTrail Trail created', () => {
   const template = Template.fromStack(stack);
 
   template.hasResourceProperties('AWS::CloudTrail::Trail', {
-    TrailName: 'Qwiz-Events'
+    TrailName: 'samilafo-Qwiz-Events'
   });
   template.resourceCountIs('AWS::CloudTrail::Trail', 1);
 });
