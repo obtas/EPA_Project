@@ -15,7 +15,7 @@ export class QwizPipelineStack extends cdk.Stack {
             pipelineName: 'QwizPipeline-samilafo',
             crossAccountKeys: true,
             synth: new CodeBuildStep('SynthStep', {
-                input: CodePipelineSource.codeCommit(repo, 'main'),
+                input: CodePipelineSource.codeCommit(repo, 'master'),
                 installCommands: [
                     'npm install -g aws-cdk',
                     'npm install -g typescript',
