@@ -114,6 +114,8 @@ export class CdkPackageStack extends Stack {
 
         // input your own domain name here. 
         const hosted_zone_name = 'samilafo.people.aws.dev'
+        // const hostedZoneID = ''
+        // const novaCrossDNSRole = '
 
         // constructing the api url with the domain name
         const qwiz_api_zone_name = 'api.' + hosted_zone_name
@@ -122,6 +124,11 @@ export class CdkPackageStack extends Stack {
         const my_hosted_zone = route53.HostedZone.fromLookup(this, 'hosted_zone', {
            domainName: hosted_zone_name,
         });
+
+        // fromHostedZoneAttributes(this, 'hosted_zone', { 
+        //     hostedZoneID,
+        //     zoneName,
+        // })
 
         // creating a zone for the sub domain for the api
         const api_hosted_sub_zone = new route53.PublicHostedZone(this, 'api_sub', {
