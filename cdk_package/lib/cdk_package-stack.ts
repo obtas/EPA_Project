@@ -100,160 +100,116 @@ export class CdkPackageStack extends Stack {
         });
 
         // input your own domain name here. 
-        // const hosted_zone_name = 'samilafo.people.aws.dev'
-        // const hostedZoneID = 'Z01794792XR6YEED0H9Y6'
-        // const novaCrossDNSRole = ''
+        const hosted_zone_name = 'samilafo.people.aws.dev'
+        const hostedZoneID = 'Z01794792XR6YEED0H9Y6'
+        const novaCrossDNSRole = 'arn:aws:iam::522253859401:role/CrossDNSDelegationRole-DO-NOT-DELETE'
 
         // constructing the api url with the domain name
-        // const qwiz_api_zone_name = 'api.' + hosted_zone_name
+        const qwiz_api_zone_name = 'samilafo-qwiz-api.' + hosted_zone_name
 
-        // looking up hosted zone already created to find the records
-        // const my_hosted_zone = route53.HostedZone.fromLookup(this, 'hosted_zone', {
-        //    domainName: hosted_zone_name,
-        // });
-
-        // fromHostedZoneAttributes(this, 'hosted_zone', { 
-        //     hostedZoneID,
-        //     zoneName,
-        // })
+        const my_hosted_zone = route53.HostedZone.fromHostedZoneAttributes(this, 'samilafo_quiz_zone', { 
+            hostedZoneId: hostedZoneID,
+            zoneName: hosted_zone_name
+        });
 
         // creating a zone for the sub domain for the api
-        // const api_hosted_sub_zone = new route53.PublicHostedZone(this, 'api_sub', {
-        //    zoneName: qwiz_api_zone_name,
-        // });
+        const api_hosted_subdomain_zone = new route53.PublicHostedZone(this, 'api_subdomain', {
+           zoneName: qwiz_api_zone_name,
+        });
 
-        // NS record for the api hosted zone in the parent zone
-        // if (api_hosted_sub_zone.hostedZoneNameServers){
-        //    new route53.NsRecord(this, 'epa_nsrecord_api', {
-        //        zone: my_hosted_zone,
-        //        recordName: qwiz_api_zone_name,
-        //        values: api_hosted_sub_zone.hostedZoneNameServers as string[]
-        // })};
+        const domain_delegation_api = new route53.CrossAccountZoneDelegationRecord(this, 'zoneDelegationAPI', {
+            delegatedZone: api_hosted_subdomain_zone,
+            parentHostedZoneId: hostedZoneID,
+            delegationRole: iam.Role.fromRoleArn(this, "DelegationRoleAPI", novaCrossDNSRole)
+        });
 
         // SSL certificate
-        // const ssl_cert_api = new acm.Certificate(this, 'certificate_api', {
-        //    domainName: qwiz_api_zone_name,
-        //    certificateName: 'qwiz_cert_ssl_api',
-        //    validation: acm.CertificateValidation.fromDns(api_hosted_sub_zone)
-        // });
+        const api_ssl_cert = new acm.DnsValidatedCertificate(this, 'CertDist', {
+            domainName: qwiz_api_zone_name,
+            hostedZone: api_hosted_subdomain_zone,
+        });
 
         // adding the domain name to the api gateway
-        // api.addDomainName('api_domain', {
-        //    domainName: qwiz_api_zone_name,
-        //    certificate: ssl_cert_api,
-        // }); 
-
-        // creating the a record for IPV4 for the api domain
-        // new route53.ARecord(this, 'epa_arecord_api', {
-        //    zone: api_hosted_sub_zone,
-        //    recordName: qwiz_api_zone_name,
-        //    target: route53.RecordTarget.fromAlias(new target.ApiGateway(api))
-        // });
-
-        // creating the a record for IPV6 for the api domain
-        // new route53.AaaaRecord(this, 'epa_Aaaarecord_api', {
-        //    zone: api_hosted_sub_zone,
-        //    recordName: qwiz_api_zone_name,
-        //    target: route53.RecordTarget.fromAlias(new target.ApiGateway(api))
-        // });
+        api.addDomainName('api_domain', {
+           domainName: qwiz_api_zone_name,
+           certificate: api_ssl_cert,
+        }); 
 
         // creating text records for security
         // values provided state that no email addresses/IPs are allowed to send emails from this domain
-        // new route53.TxtRecord(this, 'api_domain_txt_record_spf', {
-        //    zone: api_hosted_sub_zone,
-        //    recordName: qwiz_api_zone_name,
-        //    values: ['v=spf1 -all'],
-        //    comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
-        // });
+        new route53.TxtRecord(this, 'api_domain_txt_record_spf', {
+           zone: api_hosted_subdomain_zone,
+           recordName: qwiz_api_zone_name,
+           values: ['v=spf1 -all'],
+           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+        });
 
         // creating text records for security
         // values provided aids the spf records to mitigate spoofing 
-        // new route53.TxtRecord(this, 'api_domain_txt_record', {
-        //    zone: api_hosted_sub_zone,
-        //    recordName: '_dmarc.' + qwiz_api_zone_name,
-        //    values: ['v=DMARC1; p=reject; rua=mailto:report@dmarc.amazon.com; ruf=mailto:report@dmarc.amazon.com'],
-        //    comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
-        // });
+        new route53.TxtRecord(this, 'api_domain_txt_record', {
+           zone: api_hosted_subdomain_zone,
+           recordName: '_dmarc.' + qwiz_api_zone_name,
+           values: ['v=DMARC1; p=reject; rua=mailto:report@dmarc.amazon.com; ruf=mailto:report@dmarc.amazon.com'],
+           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+        });
 
         // constructing the distribution url using the parent domain name
-        // const qwiz_distribution_zone_name = 'put-in-your-website-name' + hosted_zone_name
+        const qwiz_distribution_zone_name = 'samilafo-qwiz' + hosted_zone_name
 
         // create a zone for the sub domain for the distribution
-        // const distribution_hosted_sub_zone = new route53.PublicHostedZone(this, 'distribution_sub', {
-        //   zoneName: qwiz_distribution_zone_name
-        // });
-
-        // NS record for the distribution hosted zone in the parent zone
-        // if (distribution_hosted_sub_zone.hostedZoneNameServers){
-        //    new route53.NsRecord(this, 'epa_nsrecord_distribution', {
-        //       zone: my_hosted_zone,
-        //        recordName: qwiz_distribution_zone_name,
-        //       values: distribution_hosted_sub_zone.hostedZoneNameServers as string[]
-        // })};
+        const distribution_hosted_sub_zone = new route53.PublicHostedZone(this, 'distribution_sub', {
+          zoneName: qwiz_distribution_zone_name
+        });
 
         // SSL certificate for distribution domain
-        // const ssl_cert_distribution = new acm.Certificate(this, 'certificate_distribution', {
-        //    domainName: qwiz_distribution_zone_name,
-        //    certificateName: 'qwiz_cert_ssl_distribution',
-        //    validation: acm.CertificateValidation.fromDns(distribution_hosted_sub_zone)
-        // });
+        const dist_ssl_cert = new acm.DnsValidatedCertificate(this, 'CFDis_CertDist', {
+            domainName: qwiz_api_zone_name,
+            hostedZone: api_hosted_subdomain_zone,
+            region: 'us-east-1'
+        });
 
         // bucket created to host the cloudscape code for the website
         const s3_bucket = new s3.Bucket(this, 'samilafo-qwiz-bucket', {
            blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         });
 
-        //const oai = new cloudfront.OriginAccessIdentity(this, 'epa-oai');
+        const cfoai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwiz-oai');
 
-        //bucket.grantRead(oai);
+        bucket.grantRead(cfoai);
 
-        // const distribution = new cloudfront.Distribution(this, 'samilafo_qwizguru_cloudfront', {
-        //     defaultBehavior: {
-        //         origin: new origin.S3Origin(s3_bucket, {
-        //             originAccessIdentity: oai,
-        //         }),
-        //                originRequestPolicy: cloudfront.OriginRequestPolicy.CORS_S3_ORIGIN,
-        //                viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        //                allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-        //                responseHeadersPolicy: cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS,
-        //                cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-        //     },
-        //        domainNames: [qwiz_distribution_zone_name],
-        //        certificate: ssl_cert_distribution,
-        //        enableIpv6: true,
-        // });
-
-        // creating the a record for IPV4 for the distribution domain
-        // new route53.ARecord(this, 'epa_arecord_distribution', {
-        //    zone: distribution_hosted_sub_zone,
-        //    recordName: qwiz_distribution_zone_name,
-        //    target: route53.RecordTarget.fromAlias(new target.CloudFrontTarget(distribution))
-        // });
-
-        // creating the a record for IPV6 for the distribution domain
-        // new route53.AaaaRecord(this, 'epa_Aaaarecord_website', {
-        //    zone: distribution_hosted_sub_zone,
-        //    recordName: qwiz_distribution_zone_name,
-        //    target: route53.RecordTarget.fromAlias(new target.CloudFrontTarget(distribution))
-        // });
+        const distribution = new cloudfront.Distribution(this, 'samilafo_qwizguru_cloudfront', {
+            defaultBehavior: {
+                origin: new origin.S3Origin(s3_bucket, {
+                    originAccessIdentity: oai,
+                }),
+                       originRequestPolicy: cloudfront.OriginRequestPolicy.CORS_S3_ORIGIN,
+                       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+                       responseHeadersPolicy: cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS,
+                       cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+            },
+               domainNames: [qwiz_distribution_zone_name],
+               certificate: dist_ssl_cert,
+               enableIpv6: true,
+        });
 
         // creating text records for security
         // values provided state that no email addresses/IPs are allowed to send emails from this domain
-        // new route53.TxtRecord(this, 'distribution_domain_txt_record_spf', {
-        //    zone: distribution_hosted_sub_zone,
-        //    recordName: qwiz_distribution_zone_name,
-        //    values: ['v=spf1 -all'],
-        //    comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
-        // });
+        new route53.TxtRecord(this, 'distribution_domain_txt_record_spf', {
+           zone: distribution_hosted_sub_zone,
+           recordName: qwiz_distribution_zone_name,
+           values: ['v=spf1 -all'],
+           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+        });
 
         // creating text records for security
         // values provided aids the spf records to mitigate spoofing 
-        // new route53.TxtRecord(this, 'distribution_domain_txt_record', {
-        //    zone: distribution_hosted_sub_zone,
-        //    recordName: '_dmarc.' + qwiz_distribution_zone_name,
-        //    values: ['v=DMARC1; p=reject; rua=mailto:report@dmarc.amazon.com; ruf=mailto:report@dmarc.amazon.com'],
-        //    comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
-        // });
+        new route53.TxtRecord(this, 'distribution_domain_txt_record', {
+           zone: distribution_hosted_sub_zone,
+           recordName: '_dmarc.' + qwiz_distribution_zone_name,
+           values: ['v=DMARC1; p=reject; rua=mailto:report@dmarc.amazon.com; ruf=mailto:report@dmarc.amazon.com'],
+           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+        });
 
 
         /*
