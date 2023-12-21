@@ -5,7 +5,7 @@ import {QwizPipelineStack} from "../lib/pipeline-stack";
 const app = new cdk.App();
 new QwizPipelineStack(app, 'QwizPipelineStack', {
     env : {
-        account: '522253859401',
+        account: '422437481665',
         region:'us-west-2',
     }
 });
