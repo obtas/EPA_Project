@@ -289,7 +289,7 @@ export class CdkPackageStack extends Stack {
         //     authprizaionType: apigateway.AuthorizationType.COGNITO,
         // }
 
-        // cloud trail
+        // cloudTrail
         const key = new kms.Key(this, 'cloudTrailKey', {
             enableKeyRotation: true,
         });
