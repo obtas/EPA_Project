@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  root: resolve(__dirname, 'src/pages/home'),
+  root: resolve(__dirname, 'src/pages/flavors'),
   publicDir: resolve(__dirname, 'public'),
   plugins: [react()],
   server: {
@@ -16,8 +16,8 @@ export default defineConfig({
     outDir: resolve(__dirname, './lib'),
     rollupOptions: {
       input: {
-        home: resolve(__dirname, './src/pages/home/index.html'),
-        // flavors: resolve(__dirname, './src/pages/flavors/index.html'),
+        // home: resolve(__dirname, '/index.html'),
+        flavors: resolve(__dirname, '/index.html'),
         // 'create-flavor': resolve(__dirname, './src/pages/create-flavor/index.html'),
       },
     },

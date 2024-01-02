@@ -5,7 +5,7 @@ import ContentLayout from '@cloudscape-design/components/content-layout';
 import Grid from '@cloudscape-design/components/grid';
 import Header from '@cloudscape-design/components/header';
 import Link from '@cloudscape-design/components/link';
-import HelpPanel from '../home/components/helppanel';
+import HelpPanel from './components/helppanel';
 
 import Navigation from '../../components/navigation';
 import Breadcrumbs from '../../components/breadcrumbs';
@@ -22,7 +22,7 @@ export default function App() {
     <Shell
       breadcrumbs={<Breadcrumbs active={{ text: 'Dashboard', href: '/home/index.html' }} />}
       navigation={<Navigation />}
-      tools={<HelpPanel header={<h2>Help panel</h2>} />}
+      tools={<HelpPanel />}
     >
       <ContentLayout
         header={
