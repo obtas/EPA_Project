@@ -15,6 +15,7 @@ import * as path from 'path';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as target from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs';
 import { Rule } from 'aws-cdk-lib/aws-events';
 
@@ -73,17 +74,29 @@ export class CdkPackageStack extends Stack {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         });
 
+        bucket.addCorsRule({
+            allowedOrigins: ["https://qwiz.samilafo.people.aws.dev", "https://samilafo-qwiz-api.samilafo.people.aws.dev"],
+            allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.POST],
+            allowedHeaders: ["*"],
+            exposedHeaders: ["Access-Control-Allow-Origin"]
+        })
+
+        const deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
+            sources: [s3deploy.Source.asset(path.join(__dirname, '../../cloudscape'))],
+            destinationBucket: bucket,
+        });
+
         const oai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwizguru-oai');
 
         bucket.grantRead(oai);
 
         const api = new apigateway.RestApi(this, 'samilafo-qg-api', {
             restApiName: 'samilafo-qg-api',
-            // defaultCorsPreflightOptions: {
-            //     allowOrigins: ["https://qwiz.YOUR_ALIAS.people.aws.dev"],
-            //     allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
-            //     allowMethods: ["GET", "POST"]
-            // }
+            defaultCorsPreflightOptions: {
+                allowOrigins: ["https://samilafo-qwiz.samilafo.people.aws.dev"],
+                allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
+                allowMethods: ["GET", "PUT"]
+            }
         });
 
         const putlambdaintegration = new apigateway.LambdaIntegration(putFunction);
@@ -107,7 +120,7 @@ export class CdkPackageStack extends Stack {
         // constructing the api url with the domain name
         const qwiz_api_zone_name = 'samilafo-qwiz-api.' + hosted_zone_name
 
-        const my_hosted_zone = route53.HostedZone.fromHostedZoneAttributes(this, 'samilafo_quiz_zone', { 
+        const my_hosted_zone = route53.HostedZone.fromHostedZoneAttributes(this, 'samilafo_qwiz_zone', { 
             hostedZoneId: hostedZoneID,
             zoneName: hosted_zone_name
         });
