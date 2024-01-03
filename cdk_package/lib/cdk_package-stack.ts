@@ -177,10 +177,11 @@ export class CdkPackageStack extends Stack {
           zoneName: qwiz_distribution_zone_name
         });
 
-        // SSL certificate for distribution domain
-        const dist_ssl_cert = new acm.DnsValidatedCertificate(this, 'CFDis_CertDist', {
-            domainName: qwiz_api_zone_name,
-            hostedZone: api_hosted_subdomain_zone,
+
+        // create SSL certificate for cloudfront
+        const cloudfront_ssl_cert = new acm.DnsValidatedCertificate(this, 'CFDis_CertDist', {
+            domainName: qwiz_distribution_zone_name,
+            hostedZone: distribution_hosted_sub_zone,
             region: 'us-east-1'
         });
 
@@ -206,7 +207,7 @@ export class CdkPackageStack extends Stack {
                        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
             },
                domainNames: [qwiz_distribution_zone_name],
-               certificate: dist_ssl_cert,
+               certificate: cloudfront_ssl_cert,
                enableIpv6: true,
                defaultRootObject: 'index.html'
         });
