@@ -87,6 +87,7 @@ export class CdkPackageStack extends Stack {
         const deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
             sources: [s3deploy.Source.asset(path.join(__dirname, '../../cloudscape'))],
             destinationBucket: bucket,
+            memoryLimit: 1024,
         });
 
         const oai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwizguru-oai');
