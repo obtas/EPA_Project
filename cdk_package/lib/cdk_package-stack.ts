@@ -144,6 +144,7 @@ export class CdkPackageStack extends Stack {
         const api_ssl_cert = new acm.DnsValidatedCertificate(this, 'CertDist', {
             domainName: qwiz_api_zone_name,
             hostedZone: api_hosted_subdomain_zone,
+            validation: acm.CertificateValidation.fromDns(api_hosted_subdomain_zone)
         });
 
         // adding the domain name to the api gateway
