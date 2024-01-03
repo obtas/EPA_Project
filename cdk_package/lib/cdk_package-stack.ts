@@ -141,9 +141,10 @@ export class CdkPackageStack extends Stack {
         });
 
         // SSL certificate
-        const api_ssl_cert = new acm.DnsValidatedCertificate(this, 'CertDist', {
+        const api_ssl_cert = new acm.Certificate(this, 'CertDist', {
             domainName: qwiz_api_zone_name,
-            hostedZone: api_hosted_subdomain_zone,
+            certificateName: 'qwiz-API-SSL-Cert',
+            // hostedZone: api_hosted_subdomain_zone,
             validation: acm.CertificateValidation.fromDns(api_hosted_subdomain_zone)
         });
 
@@ -172,19 +173,19 @@ export class CdkPackageStack extends Stack {
         });
 
         // constructing the distribution url using the parent domain name
-        const qwiz_distribution_zone_name = 'samilafo-qwiz' + hosted_zone_name
+        const qwiz_distribution_zone_name = 'qwizgurus-' + hosted_zone_name
 
         // create a zone for the sub domain for the distribution
         const distribution_hosted_sub_zone = new route53.PublicHostedZone(this, 'distribution_sub', {
           zoneName: qwiz_distribution_zone_name
         });
 
-
         // create SSL certificate for cloudfront
         const cloudfront_ssl_cert = new acm.DnsValidatedCertificate(this, 'CFDis_CertDist', {
             domainName: qwiz_distribution_zone_name,
             hostedZone: distribution_hosted_sub_zone,
-            region: 'us-east-1'
+            region: 'us-east-1',
+            // validation: acm.CertificateValidation.fromDns(distribution_hosted_sub_zone)
         });
 
         // bucket created to host the cloudscape code for the website
