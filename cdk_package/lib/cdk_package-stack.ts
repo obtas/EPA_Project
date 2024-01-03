@@ -194,6 +194,7 @@ export class CdkPackageStack extends Stack {
             defaultBehavior: {
                 origin: new origin.S3Origin(s3_bucket, {
                     originAccessIdentity: oai,
+                    originPath: '/lib'
                 }),
                        originRequestPolicy: cloudfront.OriginRequestPolicy.CORS_S3_ORIGIN,
                        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -204,6 +205,7 @@ export class CdkPackageStack extends Stack {
                domainNames: [qwiz_distribution_zone_name],
                certificate: dist_ssl_cert,
                enableIpv6: true,
+               defaultRootObject: 'index.html'
         });
 
         // creating text records for security
