@@ -1,4 +1,5 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
+import * as cdk from 'aws-cdk-lib';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origin from 'aws-cdk-lib/aws-cloudfront-origins';
@@ -35,6 +36,8 @@ export class CdkPackageStack extends Stack {
                 type: ddb.AttributeType.STRING
             }
         });
+
+        table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
 
         // lambda fetch interview question data
         const getFunction = new lambda.Function(this, 'Function', {
