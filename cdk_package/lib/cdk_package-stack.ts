@@ -185,7 +185,7 @@ export class CdkPackageStack extends Stack {
             domainName: qwiz_distribution_zone_name,
             hostedZone: distribution_hosted_sub_zone,
             region: 'us-east-1',
-            // validation: acm.CertificateValidation.fromDns(distribution_hosted_sub_zone)
+            validation: acm.CertificateValidation.fromDns(distribution_hosted_sub_zone)
         });
 
         // bucket created to host the cloudscape code for the website
