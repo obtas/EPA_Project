@@ -24,7 +24,7 @@ export class CdkPackageStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
-        //  dynamo table
+        //  dynamodb table
         const table = new ddb.Table(this, 'qwizgurus_interview_table_uswest2', {
             tableName: 'qwizgurus_interview_table_uswest2',
             partitionKey: {
@@ -107,14 +107,14 @@ export class CdkPackageStack extends Stack {
         const getlambdaintegration = new apigateway.LambdaIntegration(getFunction);
 
         // Supernova role
-        new iam.Role(this, "SuperNovaRole", {
-            roleName: "Nova-DO-NOT-DELETE",
-            assumedBy: new iam.ServicePrincipal("nova.aws.internal"),
-            managedPolicies: [
-                iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonRoute53FullAccess"),
-                iam.ManagedPolicy.fromAwsManagedPolicyName("SecurityAudit")
-            ]
-        });
+        // new iam.Role(this, "SuperNovaRole", {
+        //     roleName: "Nova-DO-NOT-DELETE",
+        //     assumedBy: new iam.ServicePrincipal("nova.aws.internal"),
+        //     managedPolicies: [
+        //         iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonRoute53FullAccess"),
+        //         iam.ManagedPolicy.fromAwsManagedPolicyName("SecurityAudit")
+        //     ]
+        // });
 
         // input your own domain name here. 
         const hosted_zone_name = 'samilafo.people.aws.dev'
@@ -145,7 +145,7 @@ export class CdkPackageStack extends Stack {
             domainName: qwiz_api_zone_name,
             certificateName: 'qwiz-API-SSL-Cert',
             // hostedZone: api_hosted_subdomain_zone,
-            validation: acm.CertificateValidation.fromDns(api_hosted_subdomain_zone)
+            // validation: acm.CertificateValidation.fromDns(api_hosted_subdomain_zone)
         });
 
         // adding the domain name to the api gateway
@@ -172,12 +172,31 @@ export class CdkPackageStack extends Stack {
            comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
         });
 
+        // A record and Aaaa record for api
+        new route53.ARecord(this, 'APIARecord', {
+            zone: api_hosted_subdomain_zone,
+            target: route53.RecordTarget.fromAlias(new target.ApiGateway(api)),
+            ttl: cdk.Duration.minutes(5)
+        });
+
+        new route53.AaaaRecord(this, 'APIAAAARecord', {
+            zone: api_hosted_subdomain_zone,
+            target: route53.RecordTarget.fromAlias(new target.ApiGateway(api)),
+            ttl: cdk.Duration.minutes(5)
+        });
+
         // constructing the distribution url using the parent domain name
         const qwiz_distribution_zone_name = 'qwizgurus-' + hosted_zone_name
 
         // create a zone for the sub domain for the distribution
         const distribution_hosted_sub_zone = new route53.PublicHostedZone(this, 'distribution_sub', {
           zoneName: qwiz_distribution_zone_name
+        });
+
+        const domain_delegation_cdn = new route53.CrossAccountZoneDelegationRecord(this, 'zoneDelegationCDN', {
+            delegatedZone: distribution_hosted_sub_zone,
+            parentHostedZoneId: hostedZoneID,
+            delegationRole: iam.Role.fromRoleArn(this, 'DelegationRoleCDN', novaCrossDNSRole)
         });
 
         // create SSL certificate for cloudfront
@@ -189,17 +208,17 @@ export class CdkPackageStack extends Stack {
         });
 
         // bucket created to host the cloudscape code for the website
-        const s3_bucket = new s3.Bucket(this, 'samilafo-qwiz-bucket', {
-           blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-        });
+        // const s3_bucket = new s3.Bucket(this, 'samilafo-qwiz-bucket', {
+        //    blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+        // });
 
-        const cfoai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwiz-oai');
+        // const cfoai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwiz-oai');
 
-        bucket.grantRead(cfoai);
+        // bucket.grantRead(cfoai);
 
         const distribution = new cloudfront.Distribution(this, 'samilafo_qwizguru_cloudfront', {
             defaultBehavior: {
-                origin: new origin.S3Origin(s3_bucket, {
+                origin: new origin.S3Origin(bucket, {
                     originAccessIdentity: oai,
                     originPath: '/lib'
                 }),
@@ -207,7 +226,7 @@ export class CdkPackageStack extends Stack {
                        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
                        responseHeadersPolicy: cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS,
-                       cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+                       cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
             },
                domainNames: [qwiz_distribution_zone_name],
                certificate: cloudfront_ssl_cert,
