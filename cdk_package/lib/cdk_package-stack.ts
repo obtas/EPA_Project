@@ -78,7 +78,7 @@ export class CdkPackageStack extends Stack {
         });
 
         bucket.addCorsRule({
-            allowedOrigins: ["https://qwiz.samilafo.people.aws.dev", "https://samilafo-qwiz-api.samilafo.people.aws.dev"],
+            allowedOrigins: ["https://qwizguru.samilafo.people.aws.dev", "https://samilafo-qwiz-api.samilafo.people.aws.dev"],
             allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.POST],
             allowedHeaders: ["*"],
             exposedHeaders: ["Access-Control-Allow-Origin"]
@@ -97,7 +97,7 @@ export class CdkPackageStack extends Stack {
         const api = new apigateway.RestApi(this, 'samilafo-qg-api', {
             restApiName: 'samilafo-qg-api',
             defaultCorsPreflightOptions: {
-                allowOrigins: ["https://samilafo-qwiz.samilafo.people.aws.dev"],
+                allowOrigins: ["https://qwizguru.samilafo.people.aws.dev"],
                 allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
                 allowMethods: ["GET", "PUT"]
             }
@@ -186,7 +186,7 @@ export class CdkPackageStack extends Stack {
         });
 
         // constructing the distribution url using the parent domain name
-        const qwiz_distribution_zone_name = 'qwizgurus-' + hosted_zone_name
+        const qwiz_distribution_zone_name = 'qwizguru.' + hosted_zone_name
 
         // create a zone for the sub domain for the distribution
         const distribution_hosted_sub_zone = new route53.PublicHostedZone(this, 'distribution_sub', {
