@@ -145,7 +145,7 @@ export class CdkPackageStack extends Stack {
             domainName: qwiz_api_zone_name,
             certificateName: 'qwiz-API-SSL-Cert',
             // hostedZone: api_hosted_subdomain_zone,
-            // validation: acm.CertificateValidation.fromDns(api_hosted_subdomain_zone)
+            validation: acm.CertificateValidation.fromDns(api_hosted_subdomain_zone)
         });
 
         // adding the domain name to the api gateway
