@@ -233,6 +233,19 @@ export class CdkPackageStack extends Stack {
            comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
         });
 
+        // A records / aaaa records
+        new route53.ARecord(this, 'DistributionARecord', {
+            zone: distribution_hosted_sub_zone,
+            target: route53.RecordTarget.fromAlias(new target.CloudFrontTarget(distribution)),
+            ttl: cdk.Duration.minutes(5)
+        });
+
+        new route53.AaaaRecord(this, 'DistributionAAAARecord', {
+            zone: distribution_hosted_sub_zone,
+            target: route53.RecordTarget.fromAlias(new target.CloudFrontTarget(distribution)),
+            ttl: cdk.Duration.minutes(5)
+        });
+
 
         /*
         commented out sections re cognito
