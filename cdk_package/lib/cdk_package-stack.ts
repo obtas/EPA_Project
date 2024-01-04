@@ -118,7 +118,7 @@ export class CdkPackageStack extends Stack {
 
         // input your own domain name here. 
         const hosted_zone_name = 'samilafo.people.aws.dev'
-        const hostedZoneID = 'Z01794792XR6YEED0H9Y6'
+        const hostedZoneID = 'Z05535893TMZP0FHIG5QY'
         const novaCrossDNSRole = 'arn:aws:iam::522253859401:role/CrossDNSDelegationRole-DO-NOT-DELETE'
 
         // constructing the api url with the domain name
