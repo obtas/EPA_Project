@@ -18,32 +18,58 @@ import Breadcrumbs from '../../components/breadcrumbs';
 import Navigation from '../../components/navigation';
 import ShellLayout from '../../layouts/shell';
 import axios from 'axios';
-// import { chocolate, fruits } from '../question-home/data';
 
-// const options = [...fruits, ...chocolate].map(i => ({ value: i, label: i }));
+import {
+  LEVEL_OPTIONS,
+  ROLE_OPTIONS,
+  QUESTION_TYPE_OPTIONS,
+} from './create-config'
+
 const isEmptyString = (value: string) => !value?.length;
 
 export default function App() {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-    const [level, setLevel] = useState('');
+    const [level, setLevel] = useState(LEVEL_OPTIONS[0].value);
+    const [job_role, setJob_role] = useState(ROLE_OPTIONS[0].value);
+    const [question_type, setQuestion_type] = useState(QUESTION_TYPE_OPTIONS[0].value);
     const [question, setQuestion] = useState('');
-    const [job_role, setJob_role] = useState('');
-    // const [ManagerIC, setManagerIC] = useState('');
+    const [answer, SetAnswer] = useState('');
     // const [Role, setRole] = useState('')
+    const handleSubmit = async (event:  React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-  const onSubmit = async () => {
-    const payload = {
-      'level': level,
-      'question': question,
-      'job_role': job_role
-    };
-    try {
-      const response = await axios.put('https://wxesfos310.execute-api.us-west-2.amazonaws.com/prod/put-question', payload);
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+      // Your API Gateway URL for the PUT request
+      const apiUrl = 'https://samilafo-qwiz-api.samilafo.people.aws.dev/put-question';
+
+      try {
+          const response = await fetch(apiUrl, {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  level,
+                  job_role,
+                  question_type,
+                  question,
+                  answer,
+              }),
+          });
+
+          if (response.ok) {
+              // Handle successful response
+              console.log('PUT request successful');
+          } else {
+              // Handle error response
+              console.error('PUT request failed');
+          }
+      } catch (error) {
+          // Handle fetch error
+          console.error('Error during PUT request:', error);
+      }
+
+      setIsFormSubmitted(true);
+  };
 
   return (
     <ShellLayout
@@ -63,11 +89,7 @@ export default function App() {
         }
       >
         <form
-          onSubmit={event => {
-            onSubmit;
-            // event.preventDefault();
-            setIsFormSubmitted(true);
-          }}
+          onSubmit={handleSubmit}
         >
           <Form
             actions={
@@ -83,24 +105,38 @@ export default function App() {
           >
             <SpaceBetween size="l">
               <Container header={<Header variant="h2">Level</Header>}>
-                <FormField label="Level" stretch={true}>
+                <FormField 
+                   label="Level" stretch={true}
+                   description="Choose the job level appropriate for this question"
+                >
                   <RadioGroup
                     value={level}
                     onChange={event => setLevel(event.detail.value)}
-                    // onChange={({ detail }) => setLevel(detail.value)}
-                    items={[
-                      {
-                        value: "first",
-                        label: "3"
-                      },
-                      {
-                        value: "second",
-                        label:"4"
-                      },
-                      { value: "third", label: "5" },
-                      { value: "fourth", label: "6" },
-                      { value: "fifth", label: "7" },
-                    ]}
+                    items={LEVEL_OPTIONS}
+                  />
+                </FormField>
+              </Container>
+              <Container header={<Header variant="h2">Job Role</Header>}>
+                <FormField 
+                   label="Job Role" stretch={true}
+                   description="Choose the job role appropriate for this question"
+                >
+                  <RadioGroup
+                    value={job_role}
+                    onChange={event => setJob_role(event.detail.value)}
+                    items={ROLE_OPTIONS}
+                  />
+                </FormField>
+              </Container>
+              <Container header={<Header variant="h2">Question Type</Header>}>
+                <FormField 
+                   label="Question type" stretch={true}
+                   description="Choose the question type appropriate for this question"
+                >
+                  <RadioGroup
+                    value={question_type}
+                    onChange={event => setQuestion_type(event.detail.value)}
+                    items={QUESTION_TYPE_OPTIONS}
                   />
                 </FormField>
               </Container>
@@ -124,20 +160,20 @@ export default function App() {
                 </SpaceBetween>
               </Container>
             </SpaceBetween>
-            <Container header={<Header variant="h2">Role</Header>}>
+            <Container header={<Header variant="h2">Answer</Header>}>
                 <SpaceBetween direction="vertical" size="l">
                   <FormField
-                    label="job role"
+                    label="answer"
                     errorText={
-                      isFormSubmitted && isEmptyString(job_role) && 'A role is required.'
+                      isFormSubmitted && isEmptyString(job_role) && 'An answer is required.'
                     }
                     i18nStrings={{
                       errorIconAriaLabel: 'Error',
                     }}
                   >
                       <Input
-                          value={job_role}
-                          onChange={({ detail }) => setJob_role(detail.value)}
+                          value={answer}
+                          onChange={({ detail }) => SetAnswer(detail.value)}
                           type="text"
                       />
                   </FormField>
