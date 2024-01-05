@@ -17,6 +17,7 @@ import Input from '@cloudscape-design/components/input';
 import Breadcrumbs from '../../components/breadcrumbs';
 import Navigation from '../../components/navigation';
 import ShellLayout from '../../layouts/shell';
+import axios from 'axios';
 // import { chocolate, fruits } from '../question-home/data';
 
 // const options = [...fruits, ...chocolate].map(i => ({ value: i, label: i }));
@@ -24,7 +25,7 @@ const isEmptyString = (value: string) => !value?.length;
 
 export default function App() {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-    const [level, setLevel] = useState('');
+    const [level, setLevel] = React.useState('second');
     const [question, setQuestion] = useState('');
     // const [Answer, setAnswer] = useState('');
     // const [ManagerIC, setManagerIC] = useState('');
@@ -38,6 +39,19 @@ export default function App() {
 //   const [retailPrice, setRetailPrice] = useState('');
 //   const [additionalNotes, setAdditionalNotes] = useState('');
 //   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+const onSubmit = async () => {
+  const payload = {
+    'level': level,
+    'question': question,
+  };
+  try {
+    const response = await axios.put('https://samilafo-qwiz-api.samilafo.people.aws.dev/question', payload);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   return (
     <ShellLayout
@@ -58,7 +72,8 @@ export default function App() {
       >
         <form
           onSubmit={event => {
-            event.preventDefault();
+            onSubmit;
+            // event.preventDefault();
             setIsFormSubmitted(true);
           }}
         >
