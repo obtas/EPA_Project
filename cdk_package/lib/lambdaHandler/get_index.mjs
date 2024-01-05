@@ -20,6 +20,9 @@ export const handler = async (event, context) => {
   let statusCode = 200;
   const headers = {
     "Content-Type": "application/json",
+    'Access-Control-Allow-Origin': ["https://qwizguru.samilafo.people.aws.dev", "http://localhost:8081/"],
+    'Access-Control-Allow-Methods': "OPTIONS, GET, POST , PUT, DELETE",
+    'Access-Control-Allow-Headers': 'Content-Type',
   };
   console.log(event)
   

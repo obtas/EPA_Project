@@ -97,9 +97,9 @@ export class CdkPackageStack extends Stack {
         const api = new apigateway.RestApi(this, 'samilafo-qg-api', {
             restApiName: 'samilafo-qg-api',
             defaultCorsPreflightOptions: {
-                allowOrigins: ["https://qwizguru.samilafo.people.aws.dev"],
+                allowOrigins: ["https://qwizguru.samilafo.people.aws.dev", "http://localhost:8081/"],
                 allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
-                allowMethods: ["GET", "PUT"]
+                allowMethods: ["OPTIONS", "GET", "POST", "PUT", "DELETE"]
             }
         });
 
