@@ -32,17 +32,36 @@ const columnDefinitions: TableProps<Questions>['columnDefinitions'] = [
     minWidth: 120,
   },
   {
+    header: 'Role',
+    cell: ({ job_role }) => job_role,
+    sortingField: 'question',
+    minWidth: 160,
+  },
+  {
+    header: 'Question Type',
+    cell: ({ question_type }) => question_type,
+    sortingField: 'question',
+    minWidth: 160,
+  },
+  {
     header: 'Question',
     cell: ({ question }) => question,
     sortingField: 'question',
     minWidth: 160,
   },
   {
-    header: 'Role',
-    cell: ({ job_level }) => job_level,
+    header: 'Answer',
+    cell: ({ answer }) => answer,
     sortingField: 'question',
     minWidth: 160,
   },
+  // {
+  //   header: 'Answer',
+  //   cell: ({ job_level }) => job_level,
+  //   sortingField: 'question',
+  //   minWidth: 160,
+  // },
+
 ];
 
 const EmptyState = ({ title, subtitle, action }: { title: string; subtitle: string; action: ReactNode }) => {
