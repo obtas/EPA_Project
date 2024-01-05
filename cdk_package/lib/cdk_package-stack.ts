@@ -34,7 +34,8 @@ export class CdkPackageStack extends Stack {
             sortKey: {
                 name: 'question',
                 type: ddb.AttributeType.STRING
-            }
+            },
+            removalPolicy: cdk.RemovalPolicy.DESTROY
         });
 
         table.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
