@@ -22,7 +22,8 @@ export const handler = async (event, context) => {
     "Content-Type": "application/json",
     'Access-Control-Allow-Origin': ["https://qwizguru.samilafo.people.aws.dev", "http://localhost:8081/"],
     'Access-Control-Allow-Methods': "OPTIONS, GET, POST , PUT, DELETE",
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
+    'Access-Control-Allow-Credentials': 'true',
   };
   console.log(event)
   
