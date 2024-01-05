@@ -4,9 +4,8 @@ import React from 'react';
 import SideNavigation, { SideNavigationProps } from '@cloudscape-design/components/side-navigation';
 
 const items: SideNavigationProps['items'] = [
-  { type: 'link', text: 'Dashboard', href: '/home/index.html' },
-  { type: 'link', text: 'Flavors', href: '/flavors/index.html' },
-  { type: 'link', text: 'Create flavor', href: '/create-flavor/index.html' },
+  { type: 'link', text: 'Home', href: 'index.html' },
+  // { type: 'link', text: 'Create question', href: '/createquestion/index.html' },
 ];
 
 export default function Navigation() {
@@ -14,7 +13,7 @@ export default function Navigation() {
     <>
       <SideNavigation
         activeHref={location.pathname}
-        header={{ href: '/home/index.html', text: 'Service' }}
+        header={{ href: '/index.html', text: 'Qwiz Guru' }}
         items={items}
       />
     </>

@@ -21,9 +21,9 @@ export default function Shell({ children, contentType, breadcrumbs, tools, navig
       <div id="top-nav">
         <TopNavigation
           identity={{
-            logo: { src: '/logo.svg', alt: 'Chocolate Factory Logo' },
-            title: 'Chocolate Factory',
-            href: '/home/index.html',
+            logo: { src: '/logo.svg', alt: 'Qwiz Guru Logo' },
+            title: 'Qwiz Guru - Interview Question Bank',
+            href: '/index.html',
           }}
           i18nStrings={{
             overflowMenuTriggerText: 'More',
