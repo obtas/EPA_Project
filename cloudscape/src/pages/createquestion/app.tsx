@@ -104,7 +104,7 @@ export default function App() {
             }
           >
             <SpaceBetween size="l">
-              <Container header={<Header variant="h2">Level</Header>}>
+              <Container header={<Header variant="h2">Question</Header>}>
                 <FormField 
                    label="Level" stretch={true}
                    description="Choose the job level appropriate for this question"
@@ -115,8 +115,6 @@ export default function App() {
                     items={LEVEL_OPTIONS}
                   />
                 </FormField>
-              </Container>
-              <Container header={<Header variant="h2">Job Role</Header>}>
                 <FormField 
                    label="Job Role" stretch={true}
                    description="Choose the job role appropriate for this question"
@@ -127,8 +125,6 @@ export default function App() {
                     items={ROLE_OPTIONS}
                   />
                 </FormField>
-              </Container>
-              <Container header={<Header variant="h2">Question Type</Header>}>
                 <FormField 
                    label="Question type" stretch={true}
                    description="Choose the question type appropriate for this question"
@@ -139,10 +135,7 @@ export default function App() {
                     items={QUESTION_TYPE_OPTIONS}
                   />
                 </FormField>
-              </Container>
-              <Container header={<Header variant="h2">Question</Header>}>
-                <SpaceBetween direction="vertical" size="l">
-                  <FormField
+                <FormField
                     label="Interview question"
                     errorText={
                       isFormSubmitted && isEmptyString(question) && 'A question is required.'
@@ -156,13 +149,8 @@ export default function App() {
                           onChange={({ detail }) => setQuestion(detail.value)}
                           type="text"
                       />
-                  </FormField>
-                </SpaceBetween>
-              </Container>
-            </SpaceBetween>
-            <Container header={<Header variant="h2">Answer</Header>}>
-                <SpaceBetween direction="vertical" size="l">
-                  <FormField
+                </FormField>
+                <FormField
                     label="answer"
                     errorText={
                       isFormSubmitted && isEmptyString(job_role) && 'An answer is required.'
@@ -176,9 +164,9 @@ export default function App() {
                           onChange={({ detail }) => SetAnswer(detail.value)}
                           type="text"
                       />
-                  </FormField>
+                </FormField>
+                </Container>
                 </SpaceBetween>
-              </Container>
           </Form>
         </form>
       </ContentLayout>
