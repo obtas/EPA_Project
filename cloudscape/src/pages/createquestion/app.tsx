@@ -79,6 +79,7 @@ export default function App() {
                 <FormField label="Level" stretch={true}>
                   <RadioGroup
                     value={level}
+                    onChange={({ detail }) => setLevel(detail.value)}
                     items={[
                       {
                         value: "first",
