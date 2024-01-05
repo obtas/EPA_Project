@@ -34,13 +34,13 @@ const columnDefinitions: TableProps<Questions>['columnDefinitions'] = [
   {
     header: 'Role',
     cell: ({ job_role }) => job_role,
-    sortingField: 'question',
+    sortingField: 'role',
     minWidth: 160,
   },
   {
     header: 'Question Type',
     cell: ({ question_type }) => question_type,
-    sortingField: 'question',
+    sortingField: 'question type',
     minWidth: 160,
   },
   {
@@ -52,16 +52,9 @@ const columnDefinitions: TableProps<Questions>['columnDefinitions'] = [
   {
     header: 'Answer',
     cell: ({ answer }) => answer,
-    sortingField: 'question',
+    sortingField: 'answer',
     minWidth: 160,
   },
-  // {
-  //   header: 'Answer',
-  //   cell: ({ job_level }) => job_level,
-  //   sortingField: 'question',
-  //   minWidth: 160,
-  // },
-
 ];
 
 const EmptyState = ({ title, subtitle, action }: { title: string; subtitle: string; action: ReactNode }) => {
@@ -81,6 +74,7 @@ const EmptyState = ({ title, subtitle, action }: { title: string; subtitle: stri
 export default function VariationTable() {
   const [data, setData] = useState<Questions[]>([]);
   const [loading, setLoading] = useState(true);
+  const [preferences, setPreferences] = useState<CollectionPreferencesProps['preferences']>({ pageSize: 20 });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,8 +90,19 @@ export default function VariationTable() {
     fetchData();
   }, []);
 
-  const { items, filterProps, filteredItemsCount, paginationProps, collectionProps } = useCollection<Questions>(data, {
-    filtering: {},
+  const { items, actions, filterProps, filteredItemsCount, paginationProps, collectionProps } = useCollection<Questions>(data, {
+    filtering: {
+        noMatch: (
+            <EmptyState
+                title="No matches"
+                subtitle="We can’t find a question that matches that criteria."
+                action={<Button onClick={() => actions.setFiltering('')}>Clear filter</Button>}
+            />
+        ),
+        empty: (
+            <EmptyState title="No Questions" subtitle="No questions to display." action={<Button>Enter Question</Button>} />
+        ),
+    },
     pagination: { pageSize: 20 },
     sorting: { defaultState: { sortingColumn: columnDefinitions[0] } },
     selection: {},
@@ -134,6 +139,31 @@ export default function VariationTable() {
         </Header>
       }
       pagination={<Pagination {...paginationProps} />}
+      filter={
+        <TextFilter
+            {...filterProps}
+            filteringPlaceholder="Find flavors"
+            countText={getFilterCounterText(filteredItemsCount)}
+        />
+      }
+      preferences={
+        <CollectionPreferences
+            preferences={preferences}
+            pageSizePreference={{
+                title: 'Select page size',
+                options: [
+                    { value: 10, label: '10 resources' },
+                    { value: 20, label: '20 resources' },
+                    { value: 50, label: '50 resources' },
+                    { value: 100, label: '100 resources' },
+                ],
+            }}
+            onConfirm={({ detail }) => setPreferences(detail)}
+            title="Preferences"
+            confirmLabel="Confirm"
+            cancelLabel="Cancel"
+        />
+      }
     />
   );
 }
