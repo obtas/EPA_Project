@@ -17,6 +17,8 @@ import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
+
+
 const getFilterCounterText = (count = 0) => `${count} ${count === 1 ? 'match' : 'matches'}`;
 const getHeaderCounterText = (items: readonly Questions[] = [], selectedItems: readonly Questions[] = []) => {
   return selectedItems && selectedItems.length > 0 ? `(${selectedItems.length}/${items.length})` : `(${items.length})`;
@@ -32,6 +34,12 @@ const columnDefinitions: TableProps<Questions>['columnDefinitions'] = [
   {
     header: 'Question',
     cell: ({ question }) => question,
+    sortingField: 'question',
+    minWidth: 160,
+  },
+  {
+    header: 'Role',
+    cell: ({ job_level }) => job_level,
     sortingField: 'question',
     minWidth: 160,
   },

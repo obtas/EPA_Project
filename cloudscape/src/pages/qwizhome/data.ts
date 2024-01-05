@@ -3,6 +3,7 @@
 export interface Questions {
   level: string;
   question: string;
+  job_level: string;
 }
 
 export const variationsData: Questions[] = [];
