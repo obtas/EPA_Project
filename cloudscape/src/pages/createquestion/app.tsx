@@ -25,33 +25,25 @@ const isEmptyString = (value: string) => !value?.length;
 
 export default function App() {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-    const [level, setLevel] = React.useState('second');
+    const [level, setLevel] = useState('');
     const [question, setQuestion] = useState('');
-    // const [Answer, setAnswer] = useState('');
+    const [job_role, setJob_role] = useState('');
     // const [ManagerIC, setManagerIC] = useState('');
-    // const [Role, setRole] = useState('');
+    // const [Role, setRole] = useState('')
 
-// export default function App() {
-//   const [shape, setShape] = useState('bar');
-//   const [organic, setOrganic] = useState('yes');
-//   const [selectedIngredients, setSelectedIngredients] = useState<MultiselectProps['selectedOptions']>([]);
-//   const [wholeSalePrice, setWholeSalePrice] = useState('');
-//   const [retailPrice, setRetailPrice] = useState('');
-//   const [additionalNotes, setAdditionalNotes] = useState('');
-//   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-
-const onSubmit = async () => {
-  const payload = {
-    'level': level,
-    'question': question,
-  };
-  try {
-    const response = await axios.put('https://samilafo-qwiz-api.samilafo.people.aws.dev/question', payload);
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
+  const onSubmit = async () => {
+    const payload = {
+      'level': level,
+      'question': question,
+      'job_role': job_role
+    };
+    try {
+      const response = await axios.put('https://wxesfos310.execute-api.us-west-2.amazonaws.com/prod/put-question', payload);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   }
-}
 
   return (
     <ShellLayout
@@ -94,7 +86,8 @@ const onSubmit = async () => {
                 <FormField label="Level" stretch={true}>
                   <RadioGroup
                     value={level}
-                    onChange={({ detail }) => setLevel(detail.value)}
+                    onChange={event => setLevel(event.detail.value)}
+                    // onChange={({ detail }) => setLevel(detail.value)}
                     items={[
                       {
                         value: "first",
@@ -131,6 +124,25 @@ const onSubmit = async () => {
                 </SpaceBetween>
               </Container>
             </SpaceBetween>
+            <Container header={<Header variant="h2">Role</Header>}>
+                <SpaceBetween direction="vertical" size="l">
+                  <FormField
+                    label="job role"
+                    errorText={
+                      isFormSubmitted && isEmptyString(job_role) && 'A role is required.'
+                    }
+                    i18nStrings={{
+                      errorIconAriaLabel: 'Error',
+                    }}
+                  >
+                      <Input
+                          value={job_role}
+                          onChange={({ detail }) => setJob_role(detail.value)}
+                          type="text"
+                      />
+                  </FormField>
+                </SpaceBetween>
+              </Container>
           </Form>
         </form>
       </ContentLayout>
