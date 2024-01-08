@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  root: resolve(__dirname, 'src/pages/qwizhome'),
+  root: resolve(__dirname, 'src/pages'),
   publicDir: resolve(__dirname, 'public'),
   plugins: [react()],
   server: {
@@ -16,8 +16,8 @@ export default defineConfig({
     outDir: resolve(__dirname, './lib'),
     rollupOptions: {
       input: {
-        qwizhome: resolve(__dirname, '/index.html'),
-        // createquestion: resolve(__dirname, 'createquestion/index.html'),
+        home: resolve(__dirname, './src/pages/qwizhome/index.html'),
+        createquestion: resolve(__dirname, './src/pages/createquestion/index.html'),
       },
     },
   },
