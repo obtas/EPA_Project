@@ -104,69 +104,75 @@ export default function App() {
             }
           >
             <SpaceBetween size="l">
-              <Container header={<Header variant="h2">Question</Header>}>
-                <FormField 
-                   label="Level" stretch={true}
-                   description="Choose the job level appropriate for this question"
-                >
-                  <RadioGroup
-                    value={level}
-                    onChange={event => setLevel(event.detail.value)}
-                    items={LEVEL_OPTIONS}
-                  />
-                </FormField>
-                <FormField 
-                   label="Job Role" stretch={true}
-                   description="Choose the job role appropriate for this question"
-                >
-                  <RadioGroup
-                    value={job_role}
-                    onChange={event => setJob_role(event.detail.value)}
-                    items={ROLE_OPTIONS}
-                  />
-                </FormField>
-                <FormField 
-                   label="Question type" stretch={true}
-                   description="Choose the question type appropriate for this question"
-                >
-                  <RadioGroup
-                    value={question_type}
-                    onChange={event => setQuestion_type(event.detail.value)}
-                    items={QUESTION_TYPE_OPTIONS}
-                  />
-                </FormField>
-                <FormField
-                    label="Interview question"
-                    errorText={
-                      isFormSubmitted && isEmptyString(question) && 'A question is required.'
-                    }
-                    i18nStrings={{
-                      errorIconAriaLabel: 'Error',
-                    }}
+              <Container header={<Header variant="h2">Role Details</Header>}>
+                <SpaceBetween direction="vertical" size="l">
+                  <FormField 
+                    label="Level" stretch={true}
+                    description="Choose the job level appropriate for this question"
                   >
-                      <Input
-                          value={question}
-                          onChange={({ detail }) => setQuestion(detail.value)}
-                          type="text"
-                      />
-                </FormField>
-                <FormField
-                    label="answer"
-                    errorText={
-                      isFormSubmitted && isEmptyString(job_role) && 'An answer is required.'
-                    }
-                    i18nStrings={{
-                      errorIconAriaLabel: 'Error',
-                    }}
+                    <RadioGroup
+                      value={level}
+                      onChange={event => setLevel(event.detail.value)}
+                      items={LEVEL_OPTIONS}
+                    />
+                  </FormField>
+                  <FormField 
+                    label="Job Role" stretch={true}
+                    description="Choose the job role appropriate for this question"
                   >
-                      <Input
-                          value={answer}
-                          onChange={({ detail }) => SetAnswer(detail.value)}
-                          type="text"
-                      />
-                </FormField>
-                </Container>
+                    <RadioGroup
+                      value={job_role}
+                      onChange={event => setJob_role(event.detail.value)}
+                      items={ROLE_OPTIONS}
+                    />
+                  </FormField>
                 </SpaceBetween>
+              </Container>
+              <Container header={<Header variant="h2">Question Details</Header>}>
+                <SpaceBetween direction="vertical" size="l">
+                  <FormField 
+                    label="Question type" stretch={true}
+                    description="Choose the question type appropriate for this question"
+                  >
+                    <RadioGroup
+                      value={question_type}
+                      onChange={event => setQuestion_type(event.detail.value)}
+                      items={QUESTION_TYPE_OPTIONS}
+                    />
+                  </FormField>
+                  <FormField
+                      label="Interview question"
+                      errorText={
+                        isFormSubmitted && isEmptyString(question) && 'A question is required.'
+                      }
+                      i18nStrings={{
+                        errorIconAriaLabel: 'Error',
+                      }}
+                    >
+                        <Input
+                            value={question}
+                            onChange={({ detail }) => setQuestion(detail.value)}
+                            type="text"
+                        />
+                  </FormField>
+                  <FormField
+                      label="answer"
+                      errorText={
+                        isFormSubmitted && isEmptyString(answer) && 'An answer is required.'
+                      }
+                      i18nStrings={{
+                        errorIconAriaLabel: 'Error',
+                      }}
+                    >
+                        <Input
+                            value={answer}
+                            onChange={({ detail }) => SetAnswer(detail.value)}
+                            type="text"
+                        />
+                  </FormField>
+                </SpaceBetween>
+              </Container>
+              </SpaceBetween>
           </Form>
         </form>
       </ContentLayout>
