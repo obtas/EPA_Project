@@ -40,6 +40,8 @@ export const handler = async (event, context) => {
                   level: requestJSON.level,
                   question: requestJSON.question,
                   job_role: requestJSON.job_role,
+                  question_type: requestJSON.question_type,
+                  answer: requestJSON.answer,
                 },
               })
             );
