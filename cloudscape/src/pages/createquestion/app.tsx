@@ -6,18 +6,20 @@ import HelpPanel from '@cloudscape-design/components/help-panel';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import FormField from '@cloudscape-design/components/form-field';
-import Tiles from '@cloudscape-design/components/tiles';
+// import Tiles from '@cloudscape-design/components/tiles';
 import Container from '@cloudscape-design/components/container';
-import Multiselect, { MultiselectProps } from '@cloudscape-design/components/multiselect';
+// import Multiselect, { MultiselectProps } from '@cloudscape-design/components/multiselect';
 import RadioGroup from '@cloudscape-design/components/radio-group';
-import Textarea from '@cloudscape-design/components/textarea';
-import ColumnLayout from '@cloudscape-design/components/column-layout';
+// import Textarea from '@cloudscape-design/components/textarea';
+// import ColumnLayout from '@cloudscape-design/components/column-layout';
 import Input from '@cloudscape-design/components/input';
+import StatusIndicator from "@cloudscape-design/components/status-indicator";
+
 
 import Breadcrumbs from '../../components/breadcrumbs';
 import Navigation from '../../components/navigation';
 import ShellLayout from '../../layouts/shell';
-import axios from 'axios';
+// import axios from 'axios';
 
 import {
   LEVEL_OPTIONS,
@@ -34,9 +36,12 @@ export default function App() {
     const [question_type, setQuestion_type] = useState(QUESTION_TYPE_OPTIONS[0].value);
     const [question, setQuestion] = useState('');
     const [answer, SetAnswer] = useState('');
-    // const [Role, setRole] = useState('')
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
     const handleSubmit = async (event:  React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      setLevel(LEVEL_OPTIONS[0].value)
 
       // Your API Gateway URL for the PUT request
       const apiUrl = 'https://samilafo-qwiz-api.samilafo.people.aws.dev/put-question';
@@ -59,9 +64,21 @@ export default function App() {
           if (response.ok) {
               // Handle successful response
               console.log('PUT request successful');
+              setSuccessMessage('Form submitted successfully');
+              setErrorMessage('');
+              setLevel(LEVEL_OPTIONS[0].value);
+              setJob_role(ROLE_OPTIONS[0].value);
+              setQuestion_type(QUESTION_TYPE_OPTIONS[0].value)
+              setQuestion('');
+              SetAnswer('');
+              return <StatusIndicator>Success</StatusIndicator>;
+
           } else {
               // Handle error response
               console.error('PUT request failed');
+              setErrorMessage('Failed to submit the form. Please try again');
+              setSuccessMessage('');
+              return (<StatusIndicator type="error">Error</StatusIndicator>);
           }
       } catch (error) {
           // Handle fetch error
