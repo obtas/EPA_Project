@@ -20,6 +20,10 @@ import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs';
 import { Rule } from 'aws-cdk-lib/aws-events';
 
+// export interface ServiceStageProps extends StackProps {
+//     readonly stageName: string;
+// }
+
 export class CdkPackageStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
@@ -42,6 +46,7 @@ export class CdkPackageStack extends Stack {
 
         // lambda fetch interview question data
         const getFunction = new lambda.Function(this, 'Function', {
+            functionName: 'getLambda',
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: 'get_index.handler',
             code: lambda.Code.fromAsset(path.join(__dirname, 'lambdaHandler')),
@@ -59,6 +64,7 @@ export class CdkPackageStack extends Stack {
 
         // lambda write interview question data
         const putFunction = new lambda.Function(this, 'putFunction', {
+            functionName: 'putLambda',
             runtime: lambda.Runtime.NODEJS_18_X,
             handler: 'put_index.handler',
             code: lambda.Code.fromAsset(path.join(__dirname, 'lambdaHandler')),

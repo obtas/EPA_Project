@@ -1,4 +1,5 @@
 import { Construct } from 'constructs';
+// import { ServiceStage } from './pipeline-stage';
 import { ProdStage } from './pipeline-prod-stage';
 import { AlphaStage } from "./pipeline-alpha-stage";
 import * as cdk from 'aws-cdk-lib';
@@ -8,6 +9,14 @@ import { CodeBuildStep, CodePipeline, CodePipelineSource, ShellStep } from "aws-
 export class QwizPipelineStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
+
+        // const constants = {
+        //     stages: [
+        //         { name: "Alpha", accountId: "522253859401", region: "us-west-2", isProd: false },
+        //         { name: "Prod", accountId: "937836275043", region: "us-west-2", isProd: false }
+        //     ]
+        // }
+
         // Use pre-exisitng CodeCommit repository
         const repo = codecommit.Repository.fromRepositoryName(this, 'QwizGuruRepo', "QwizGuruPlatform");
 
@@ -34,6 +43,16 @@ export class QwizPipelineStack extends cdk.Stack {
                 primaryOutputDirectory: 'cdk_package/cdk.out',
             })
         });
+
+        // constants.stages.map((s) => {
+        //     const deployment = new ServiceStage(this, (s.name.toLowerCase() + 'Deployment'), {
+        //         env: { account: s.accountId, region: s.region },
+        //         stageName: s.isProd ? '' : s.name.toLowerCase(),
+
+        //     });
+
+        //     const stage = pipeline.addStage(deployment)
+        // })
 
         const alpha_stage = pipeline.addStage(new AlphaStage(this, "Alpha", {
             env: { account: '522253859401', region: 'us-west-2'}
