@@ -13,7 +13,8 @@ import RadioGroup from '@cloudscape-design/components/radio-group';
 // import Textarea from '@cloudscape-design/components/textarea';
 // import ColumnLayout from '@cloudscape-design/components/column-layout';
 import Input from '@cloudscape-design/components/input';
-import StatusIndicator from "@cloudscape-design/components/status-indicator";
+// import StatusIndicator from "@cloudscape-design/components/status-indicator";
+import Flashbar from "@cloudscape-design/components/flashbar";
 
 
 import Breadcrumbs from '../../components/breadcrumbs';
@@ -29,6 +30,16 @@ import {
 
 const isEmptyString = (value: string) => !value?.length;
 
+// interface FlashItem {
+//   type: string;
+//   content: string;
+//   action: JSX.Element;
+//   dismissible: boolean;
+//   dismissLabel: string;
+//   onDismiss: () => void;
+//   id: string;
+// }
+
 export default function App() {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [level, setLevel] = useState(LEVEL_OPTIONS[0].value);
@@ -36,12 +47,23 @@ export default function App() {
     const [question_type, setQuestion_type] = useState(QUESTION_TYPE_OPTIONS[0].value);
     const [question, setQuestion] = useState('');
     const [answer, SetAnswer] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    // const [items, setItems] = React.useState<FlashItem[]>([]);
+    const [items, setItems] = React.useState([
+      {
+        type: "success",
+        content: "Success - Interview question posted.",
+        action: <Button href="/index.html" variant="link">View questions</Button>,
+        dismissible: true,
+        dismissLabel: "Dismiss message",
+        onDismiss: () => setItems([]),
+        id: "message_1"
+      }
+    ]);
+    // const [successMessage, setSuccessMessage] = useState('');
+    // const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (event:  React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      setLevel(LEVEL_OPTIONS[0].value)
 
       // Your API Gateway URL for the PUT request
       const apiUrl = 'https://samilafo-qwiz-api.samilafo.people.aws.dev/put-question';
@@ -64,22 +86,24 @@ export default function App() {
           if (response.ok) {
               // Handle successful response
               console.log('PUT request successful');
-              setSuccessMessage('Form submitted successfully');
-              setErrorMessage('');
+
+              // setItems([successMessage]);
+
+              // setSuccessMessage('Form submitted successfully');
+              // setErrorMessage('');
               setLevel(LEVEL_OPTIONS[0].value);
               setJob_role(ROLE_OPTIONS[0].value);
               setQuestion_type(QUESTION_TYPE_OPTIONS[0].value)
               setQuestion('');
               SetAnswer('');
-              return <StatusIndicator>Success</StatusIndicator>;
 
           } else {
               // Handle error response
               console.error('PUT request failed');
-              setErrorMessage('Failed to submit the form. Please try again');
-              setSuccessMessage('');
-              return (<StatusIndicator type="error">Error</StatusIndicator>);
+              // setErrorMessage('Failed to submit the form. Please try again');
+              // setSuccessMessage('');
           }
+
       } catch (error) {
           // Handle fetch error
           console.error('Error during PUT request:', error);
@@ -191,6 +215,7 @@ export default function App() {
               </Container>
               </SpaceBetween>
           </Form>
+          <Flashbar items={items} />
         </form>
       </ContentLayout>
     </ShellLayout>
