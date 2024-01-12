@@ -28,7 +28,7 @@ const tableName = "qwizgurus_interview_table_uswest2";
 // }
 
 // @ts-nocheck 
-export const handler = async (event) => {
+export const handler = async (event: any) => {
   let body;
   let statusCode = 200;
   const headers = {
@@ -56,7 +56,7 @@ export const handler = async (event) => {
       default:
         throw new Error(`Unsupported route: "${event.requestContext.httpMethod}"`);
     }
-  } catch (err) {
+  } catch (err: any) {
     statusCode = 400;
     // @ts-nocheck 
     body = err.message;
