@@ -27,6 +27,7 @@ const tableName = "qwizgurus_interview_table_uswest2";
 //   requestContext: GetIndexAPIGatewayEventRequestContext;
 // }
 
+// @ts-nocheck 
 export const handler = async (event) => {
   let body;
   let statusCode = 200;
@@ -57,6 +58,7 @@ export const handler = async (event) => {
     }
   } catch (err) {
     statusCode = 400;
+    // @ts-nocheck 
     body = err.message;
   } finally {
     body = JSON.stringify(body);
