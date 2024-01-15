@@ -14,7 +14,7 @@ export class MonitoringStack extends Stack {
 
         // const referenceStack = cdk.StackRe
         const dashboard = new cw.Dashboard(this, 'QwizGuruDashboard', {
-            dashboardName: 'QwizGuru Dashboard',
+            dashboardName: 'QwizGuruDashboard',
         });
 
         const accountid = '522253859401'
