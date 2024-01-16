@@ -135,7 +135,7 @@ export class MonitoringStack extends Stack {
         invocations.addRightMetric(getlambdaInvocations)
 
         const duration = new cw.GraphWidget({
-            title: 'Lambda Invocations',
+            title: 'Lambda Duration',
             height: 8,
             width: 12,
         })
@@ -144,7 +144,7 @@ export class MonitoringStack extends Stack {
         duration.addRightMetric(getlambdaDuration)
 
         const errors = new cw.GraphWidget({
-            title: 'Lambda Invocations',
+            title: 'Lambda Errors',
             height: 8,
             width: 12,
         })
