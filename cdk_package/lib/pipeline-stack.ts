@@ -1,12 +1,16 @@
 import { Construct } from 'constructs';
 // import { ServiceStage } from './pipeline-stage';
-import { ProdStage } from './pipeline-prod-stage';
+import { TestStage } from './pipeline-test-stage';
 import { AlphaStage } from "./pipeline-alpha-stage";
 import * as cdk from 'aws-cdk-lib';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import { CodeBuildStep, CodePipeline, CodePipelineSource, ShellStep } from "aws-cdk-lib/pipelines";
+import { CdkPackageStack } from './cdk_package-stack';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 
 export class QwizPipelineStack extends cdk.Stack {
+    public readonly cloudfrontAddress: cdk.CfnOutput; 
+
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
@@ -58,11 +62,17 @@ export class QwizPipelineStack extends cdk.Stack {
             env: { account: '522253859401', region: 'us-west-2'}
         }));
 
-        alpha_stage.addPost(new ShellStep("validate", {
-            commands: ['../../scripts/run-tests.sh']
+        alpha_stage.addPre(new ShellStep("validate", {
+            input: CodePipelineSource.codeCommit(repo, 'master'),
+            commands: ['pwd', '/scripts/run-tests.sh']
         }))
 
-        const prod_stage = pipeline.addStage(new ProdStage(this, "Prod", {
+        // alpha_stage.addPost(new ShellStep("Outputs", {
+        //     envFromCfnOutputs: {cf_addr: cloudfrontAddress},
+        //     commands: ['echo $cf_addr']
+        // }))
+
+        const test_stage = pipeline.addStage(new TestStage(this, "Prod", {
             env: { account: '937836275043', region: 'us-west-2'}
         }));
     }
