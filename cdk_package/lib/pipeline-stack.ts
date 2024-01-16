@@ -1,7 +1,7 @@
 import { Construct } from 'constructs';
 // import { ServiceStage } from './pipeline-stage';
 import { TestStage } from './pipeline-test-stage';
-import { AlphaStage } from "./pipeline-alpha-stage";
+import { ProdStage } from "./pipeline-prod-stage";
 import * as cdk from 'aws-cdk-lib';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import { CodeBuildStep, CodePipeline, CodePipelineSource, ShellStep } from "aws-cdk-lib/pipelines";
@@ -60,16 +60,16 @@ export class QwizPipelineStack extends cdk.Stack {
         //     const stage = pipeline.addStage(deployment)
         // })
 
-        const alpha_stage = pipeline.addStage(new AlphaStage(this, "Alpha", {
+        const prod_stage = pipeline.addStage(new ProdStage(this, "Alpha", {
             env: { account: '522253859401', region: 'us-west-2'}
         }));
 
-        alpha_stage.addPre(new ShellStep("ValidationTests", {
+        prod_stage.addPre(new ShellStep("ValidationTests", {
             input: source,
             commands: ['pwd', 'npm run test']
         }))
 
-        alpha_stage.addPost(new ShellStep('TestEndpoint', {
+        prod_stage.addPost(new ShellStep('TestEndpoint', {
             commands: [
                 'curl -Ssf https://qwizguru.samilafo.people.aws.dev/',
                 'curl -Ssf https://samilafo-qwiz-api.samilafo.people.aws.dev/question',

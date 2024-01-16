@@ -3,7 +3,7 @@ import { Construct } from "constructs";
 import { CdkPackageStack } from './cdk_package-stack';
 import { MonitoringStack } from './monitoring-stack';
 
-export class AlphaStage extends cdk.Stage {
+export class ProdStage extends cdk.Stage {
     // public readonly cloudfrontAddress: cdk.CfnOutput;
 
     constructor(scope: Construct, id: string, props?: cdk.StageProps) {
