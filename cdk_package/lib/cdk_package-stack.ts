@@ -25,6 +25,9 @@ import { Rule } from 'aws-cdk-lib/aws-events';
 // }
 
 export class CdkPackageStack extends Stack {
+
+    public readonly cloudfrontAddress: cdk.CfnOutput;
+
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
@@ -240,6 +243,10 @@ export class CdkPackageStack extends Stack {
                enableIpv6: true,
                defaultRootObject: 'index.html'
         });
+        
+        this.cloudfrontAddress = new cdk.CfnOutput(this, 'CloudfrontAddress', {
+            value: distribution.distributionDomainName
+        })
 
         // creating text records for security
         // values provided state that no email addresses/IPs are allowed to send emails from this domain
