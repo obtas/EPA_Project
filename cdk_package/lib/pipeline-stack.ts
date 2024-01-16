@@ -72,7 +72,7 @@ export class QwizPipelineStack extends cdk.Stack {
         alpha_stage.addPost(new ShellStep('TestEndpoint', {
             commands: [
                 'curl -Ssf https://qwizguru.samilafo.people.aws.dev/',
-                'curl -Ssf https://qwizguru.samilafo.people.aws.dev/question',
+                'curl -Ssf https://samilafo-qwiz-api.samilafo.people.aws.dev/question',
             ]
         }))
 
