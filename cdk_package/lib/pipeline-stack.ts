@@ -81,8 +81,8 @@ export class QwizPipelineStack extends cdk.Stack {
         //     commands: ['echo $cf_addr']
         // }))
 
-        const test_stage = pipeline.addStage(new TestStage(this, "Prod", {
-            env: { account: '937836275043', region: 'us-west-2'}
-        }));
+        // const test_stage = pipeline.addStage(new TestStage(this, "Prod", {
+        //     env: { account: '937836275043', region: 'us-west-2'}
+        // }));
     }
 }
