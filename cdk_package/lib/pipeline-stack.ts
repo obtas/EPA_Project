@@ -60,13 +60,13 @@ export class QwizPipelineStack extends cdk.Stack {
         //     const stage = pipeline.addStage(deployment)
         // })
 
-        const prod_stage = pipeline.addStage(new ProdStage(this, "Alpha", {
+        const prod_stage = pipeline.addStage(new ProdStage(this, "Prod", {
             env: { account: '522253859401', region: 'us-west-2'}
         }));
 
-        prod_stage.addPre(new ShellStep("ValidationTests", {
+        prod_stage.addPre(new ShellStep("ValidationAndUnitTests", {
             input: source,
-            commands: ['pwd', 'npm run test']
+            commands: ['npm run test']
         }))
 
         prod_stage.addPost(new ShellStep('TestEndpoint', {
