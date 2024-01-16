@@ -64,12 +64,12 @@ export class QwizPipelineStack extends cdk.Stack {
             env: { account: '522253859401', region: 'us-west-2'}
         }));
 
-        alpha_stage.addPre(new ShellStep("validate", {
+        alpha_stage.addPre(new ShellStep("ValidationTests", {
             input: source,
-            commands: ['pwd', '/scripts/run-tests.sh']
+            commands: ['pwd', 'npm run test']
         }))
 
-        alpha_stage.addPost(new ShellStep('TestCloudfrontEndpoint', {
+        alpha_stage.addPost(new ShellStep('TestEndpoint', {
             commands: [
                 'curl -Ssf https://qwizguru.samilafo.people.aws.dev/',
                 'curl -Ssf https://qwizguru.samilafo.people.aws.dev/question',
