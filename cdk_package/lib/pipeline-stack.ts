@@ -24,11 +24,13 @@ export class QwizPipelineStack extends cdk.Stack {
         // Use pre-exisitng CodeCommit repository
         const repo = codecommit.Repository.fromRepositoryName(this, 'QwizGuruRepo', "QwizGuruPlatform");
 
+        const source = CodePipelineSource.codeCommit(repo, 'master')
+
         const pipeline = new CodePipeline(this, 'QwizPipeline-samilafo', {
             pipelineName: 'QwizPipeline-samilafo',
             crossAccountKeys: true,
             synth: new CodeBuildStep('SynthStep', {
-                input: CodePipelineSource.codeCommit(repo, 'master'),
+                input: source,
                 installCommands: [
                     'npm install -g aws-cdk',
                     'npm install -g typescript',
@@ -63,8 +65,15 @@ export class QwizPipelineStack extends cdk.Stack {
         }));
 
         alpha_stage.addPre(new ShellStep("validate", {
-            input: CodePipelineSource.codeCommit(repo, 'master'),
+            input: source,
             commands: ['pwd', '/scripts/run-tests.sh']
+        }))
+
+        alpha_stage.addPost(new ShellStep('TestCloudfrontEndpoint', {
+            commands: [
+                'curl -Ssf https://qwizguru.samilafo.people.aws.dev/',
+                'curl -Ssf https://qwizguru.samilafo.people.aws.dev/question',
+            ]
         }))
 
         // alpha_stage.addPost(new ShellStep("Outputs", {
