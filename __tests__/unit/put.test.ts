@@ -67,3 +67,5 @@ it ("should put an item into the dynamoDB", async () => {
     expect(response.statusCode).toBe(200)
     expect(response.body).toBe("\"Put item BEEP_TEST_QUESTION\"")
 }) 
+
+

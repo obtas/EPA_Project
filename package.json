@@ -4,6 +4,7 @@
     "@babel/preset-env": "^7.23.8",
     "@babel/preset-typescript": "^7.23.3",
     "@shelf/jest-dynamodb": "^3.4.4",
+    "@types/jest": "^29.5.11",
     "aws-cdk-lib": "^2.118.0",
     "aws-lambda": "^1.0.7",
     "aws-sdk-client-mock": "^3.0.1",

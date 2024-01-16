@@ -7,13 +7,12 @@ import {
   DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 
-// import { marshall } from "@aws-sdk/util-dynamodb";
-
 const client = new DynamoDBClient({});
 
 const dynamo = DynamoDBDocumentClient.from(client);
 
 const tableName = 'qwizgurus_interview_table_uswest2';
+
 // @ts-nocheck 
 export const handler = async (event: any) => {
   let body;
@@ -25,9 +24,6 @@ export const handler = async (event: any) => {
     'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent"
   };
   console.log(event)
-  
-  // switch(event.routeKey)
-  // switch (event.requestContext.httpMethod)
 
   try {
     switch(event.requestContext.httpMethod) {
@@ -54,6 +50,7 @@ export const handler = async (event: any) => {
     statusCode = 400;
     // @ts-nocheck 
     body = err.message;
+    console.log(body)
   } finally {
     body = JSON.stringify(body);
   }

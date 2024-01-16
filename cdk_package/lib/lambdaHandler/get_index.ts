@@ -8,24 +8,11 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { Context, APIGatewayProxyCallback, APIGatewayEvent } from 'aws-lambda';
 
-// export const lambdaHandler = (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback): void => {
-
-// import { marshall } from "@aws-sdk/util-dynamodb";
-
-const client = new DynamoDBClient({});
+const client = new DynamoDBClient({})
 
 const dynamo = DynamoDBDocumentClient.from(client);
 
 const tableName = "qwizgurus_interview_table_uswest2";
-
-// interface GetIndexAPIGatewayEventRequestContext {
-//   httpMethod: string;
-// }
-
-// interface GetIndexAPIGatewayEvent {
-//   body: string;
-//   requestContext: GetIndexAPIGatewayEventRequestContext;
-// }
 
 // @ts-nocheck 
 export const handler = async (event: any) => {
@@ -38,20 +25,14 @@ export const handler = async (event: any) => {
     'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent"
   };
   console.log(event)
-  
-  // switch(event.routeKey)
-  // switch (event.requestContext.httpMethod)
 
   try {
     switch(event.requestContext.httpMethod) {
       case "GET":
-          // console.log('its a GET method');
           body = await dynamo.send(
             new ScanCommand({ TableName: tableName })
           );
-          // console.log("AAAAAAAAA", body)
           body = body.Items;
-          // console.log(body)
           break;
       default:
         throw new Error(`Unsupported route: "${event.requestContext.httpMethod}"`);
@@ -60,6 +41,7 @@ export const handler = async (event: any) => {
     statusCode = 400;
     // @ts-nocheck 
     body = err.message;
+    console.log(body)
   } finally {
     body = JSON.stringify(body);
   }
