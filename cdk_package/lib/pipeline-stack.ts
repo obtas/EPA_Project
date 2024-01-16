@@ -58,6 +58,10 @@ export class QwizPipelineStack extends cdk.Stack {
             env: { account: '522253859401', region: 'us-west-2'}
         }));
 
+        alpha_stage.addPost(new ShellStep("validate", {
+            commands: ['../../scripts/run-tests.sh']
+        }))
+
         const prod_stage = pipeline.addStage(new ProdStage(this, "Prod", {
             env: { account: '937836275043', region: 'us-west-2'}
         }));
