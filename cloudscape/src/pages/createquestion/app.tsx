@@ -146,7 +146,6 @@ export default function App() {
             }
           >
             <SpaceBetween size="l">
-            <Flashbar items={items}/>
               <Container header={<Header variant="h2">Role Details</Header>}>
                 <SpaceBetween direction="vertical" size="l">
                   <FormField 
