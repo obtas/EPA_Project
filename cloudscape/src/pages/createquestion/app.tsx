@@ -213,9 +213,11 @@ export default function App() {
                   </FormField>
                 </SpaceBetween>
               </Container>
+              <Container>
+                <Flashbar items={items}/>
+              </Container>
               </SpaceBetween>
           </Form>
-          <Flashbar items={items} />
         </form>
       </ContentLayout>
     </ShellLayout>

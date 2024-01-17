@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 // import { ServiceStage } from './pipeline-stage';
-import { TestStage } from './pipeline-test-stage';
+import { DevStage } from './pipeline-dev-stage';
 import { ProdStage } from "./pipeline-prod-stage";
 import * as cdk from 'aws-cdk-lib';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
@@ -50,16 +50,21 @@ export class QwizPipelineStack extends cdk.Stack {
             })
         });
 
-        // constants.stages.map((s) => {
-        //     const deployment = new ServiceStage(this, (s.name.toLowerCase() + 'Deployment'), {
-        //         env: { account: s.accountId, region: s.region },
-        //         stageName: s.isProd ? '' : s.name.toLowerCase(),
+        const dev_stage = pipeline.addStage(new ProdStage(this, "Prod", {
+            env: { account: '937836275043', region: 'us-west-2'}
+        }));
 
-        //     });
+        dev_stage.addPre(new ShellStep("ValidationAndUnitTests", {
+            input: source,
+            commands: ['npm run test']
+        }))
 
-        //     const stage = pipeline.addStage(deployment)
-        // })
-
+        dev_stage.addPost(new ShellStep('TestEndpoint', {
+            commands: [
+                'curl -Ssf https://qwizguru.samilafo.people.aws.dev/',
+                'curl -Ssf https://samilafo-qwiz-api.samilafo.people.aws.dev/question',
+            ]
+        }))
         const prod_stage = pipeline.addStage(new ProdStage(this, "Prod", {
             env: { account: '522253859401', region: 'us-west-2'}
         }));
