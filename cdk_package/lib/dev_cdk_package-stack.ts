@@ -226,7 +226,7 @@ export class DevCdkPackageStack extends Stack {
 
         // bucket.grantRead(cfoai);
 
-        const distribution = new cloudfront.Distribution(this, 'samilafo_qwizguru_cloudfront', {
+        const distribution = new cloudfront.Distribution(this, 'dev_samilafo_qwizguru_cloudfront', {
             defaultBehavior: {
                 origin: new origin.S3Origin(bucket, {
                     originAccessIdentity: oai,
