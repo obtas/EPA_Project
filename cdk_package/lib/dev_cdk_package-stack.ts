@@ -88,7 +88,7 @@ export class DevCdkPackageStack extends Stack {
         });
 
         bucket.addCorsRule({
-            allowedOrigins: ["https://qwizguru.samilafo.people.aws.dev", "https://samilafo-qwiz-api.samilafo.people.aws.dev"],
+            allowedOrigins: ["https://dev.qwizguru.samilafo.people.aws.dev", "https://dev-samilafo-qwiz-api.samilafo.people.aws.dev"],
             allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.POST],
             allowedHeaders: ["*"],
             exposedHeaders: ["Access-Control-Allow-Origin"]
@@ -107,7 +107,7 @@ export class DevCdkPackageStack extends Stack {
         const api = new apigateway.RestApi(this, 'samilafo-qg-api', {
             restApiName: 'DEVsamilafo-qg-api',
             defaultCorsPreflightOptions: {
-                allowOrigins: ["https://qwizguru.samilafo.people.aws.dev", "http://localhost:8081/"],
+                allowOrigins: ["https://dev.qwizguru.samilafo.people.aws.dev", "http://localhost:8081/"],
                 allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
                 allowMethods: ["OPTIONS", "GET", "POST", "PUT", "DELETE"]
             }
