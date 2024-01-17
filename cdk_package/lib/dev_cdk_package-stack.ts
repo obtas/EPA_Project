@@ -51,7 +51,7 @@ export class DevCdkPackageStack extends Stack {
         const getFunction = new lambda.Function(this, 'DEV_GET_Function', {
             functionName: 'DEVgetLambda',
             runtime: lambda.Runtime.NODEJS_18_X,
-            handler: 'get_index.handler',
+            handler: 'dev_get_index.handler',
             code: lambda.Code.fromAsset(path.join(__dirname, 'lambdaHandler')),
         });
 
@@ -69,7 +69,7 @@ export class DevCdkPackageStack extends Stack {
         const putFunction = new lambda.Function(this, 'DEV_PUT_Function', {
             functionName: 'DEVputLambda',
             runtime: lambda.Runtime.NODEJS_18_X,
-            handler: 'put_index.handler',
+            handler: 'dev_put_index.handler',
             code: lambda.Code.fromAsset(path.join(__dirname, 'lambdaHandler')),
         });
 
