@@ -43,7 +43,7 @@ export class QwizPipelineStack extends cdk.Stack {
             })
         });
 
-        const dev_stage = pipeline.addStage(new ProdStage(this, "Dev", {
+        const dev_stage = pipeline.addStage(new DevStage(this, "Dev", {
             env: { account: '937836275043', region: 'us-west-2'}
         }));
 
