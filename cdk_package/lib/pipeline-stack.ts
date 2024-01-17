@@ -14,13 +14,6 @@ export class QwizPipelineStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        // const constants = {
-        //     stages: [
-        //         { name: "Alpha", accountId: "522253859401", region: "us-west-2", isProd: false },
-        //         { name: "Prod", accountId: "937836275043", region: "us-west-2", isProd: false }
-        //     ]
-        // }
-
         // Use pre-exisitng CodeCommit repository
         const repo = codecommit.Repository.fromRepositoryName(this, 'QwizGuruRepo', "QwizGuruPlatform");
 
@@ -50,7 +43,7 @@ export class QwizPipelineStack extends cdk.Stack {
             })
         });
 
-        const dev_stage = pipeline.addStage(new ProdStage(this, "Prod", {
+        const dev_stage = pipeline.addStage(new ProdStage(this, "Dev", {
             env: { account: '937836275043', region: 'us-west-2'}
         }));
 
@@ -61,8 +54,8 @@ export class QwizPipelineStack extends cdk.Stack {
 
         dev_stage.addPost(new ShellStep('TestEndpoint', {
             commands: [
-                'curl -Ssf https://qwizguru.samilafo.people.aws.dev/',
-                'curl -Ssf https://samilafo-qwiz-api.samilafo.people.aws.dev/question',
+                'curl -Ssf https://dev.qwizguru.samilafo.people.aws.dev/',
+                'curl -Ssf https://dev-samilafo-qwiz-api.samilafo.people.aws.dev/question',
             ]
         }))
         const prod_stage = pipeline.addStage(new ProdStage(this, "Prod", {
@@ -80,14 +73,5 @@ export class QwizPipelineStack extends cdk.Stack {
                 'curl -Ssf https://samilafo-qwiz-api.samilafo.people.aws.dev/question',
             ]
         }))
-
-        // alpha_stage.addPost(new ShellStep("Outputs", {
-        //     envFromCfnOutputs: {cf_addr: cloudfrontAddress},
-        //     commands: ['echo $cf_addr']
-        // }))
-
-        // const test_stage = pipeline.addStage(new TestStage(this, "Prod", {
-        //     env: { account: '937836275043', region: 'us-west-2'}
-        // }));
     }
 }
