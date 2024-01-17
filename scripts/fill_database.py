@@ -11,7 +11,7 @@ boto3.set_stream_logger('', logging.DEBUG)
 # client = boto3.client('dynamodb')
 
 dynamodb = boto3.resource("dynamodb", region_name = 'us-west-2')
-table = dynamodb.Table('DEV_qwizgurus_interview_table_uswest2')
+table = dynamodb.Table('qwizgurus_interview_table_uswest2')
 
 
 questions = [{

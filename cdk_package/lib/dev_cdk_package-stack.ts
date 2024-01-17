@@ -95,7 +95,7 @@ export class DevCdkPackageStack extends Stack {
         })
 
         const deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
-            sources: [s3deploy.Source.asset(path.join(__dirname, '../../cloudscape'))],
+            sources: [s3deploy.Source.asset(path.join(__dirname, '../../DEVcloudscape'))],
             destinationBucket: bucket,
             memoryLimit: 1024,
         });
