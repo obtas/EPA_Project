@@ -30,15 +30,25 @@ import {
 
 const isEmptyString = (value: string) => !value?.length;
 
-// interface FlashItem {
-//   type: string;
-//   content: string;
-//   action: JSX.Element;
-//   dismissible: boolean;
-//   dismissLabel: string;
-//   onDismiss: () => void;
-//   id: string;
-// }
+type MessageDefinition = {
+  type?: "success" | "error" | "info" | "warning"; // Adjust based on the expected types
+  content: string;
+  action?: React.ReactNode;
+  dismissible?: boolean;
+  dismissLabel?: string;
+  onDismiss?: () => void;
+  id?: string;
+};
+
+interface FlashItem {
+  type: string;
+  content: string;
+  action: JSX.Element;
+  dismissible: boolean;
+  dismissLabel: string;
+  onDismiss: () => void;
+  id: string;
+}
 
 export default function App() {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -47,18 +57,8 @@ export default function App() {
     const [question_type, setQuestion_type] = useState(QUESTION_TYPE_OPTIONS[0].value);
     const [question, setQuestion] = useState('');
     const [answer, SetAnswer] = useState('');
-    // const [items, setItems] = React.useState<FlashItem[]>([]);
-    const [items, setItems] = React.useState([
-      {
-        type: "success" as const,
-        content: "Success - Interview question posted.",
-        action: <Button href="/index.html" variant="link">View questions</Button>,
-        dismissible: true,
-        dismissLabel: "Dismiss message",
-        onDismiss: () => setItems([]),
-        id: "message_1"
-      }
-    ]);
+    const [items, setItems] = React.useState<MessageDefinition[]>([]);
+    // const [items, setItems] = React.useState([]);
     // const [successMessage, setSuccessMessage] = useState('');
     // const [errorMessage, setErrorMessage] = useState('');
 
@@ -96,7 +96,15 @@ export default function App() {
               setQuestion_type(QUESTION_TYPE_OPTIONS[0].value)
               setQuestion('');
               SetAnswer('');
-              setItems(items)
+              setItems([{
+                type: "success" as const,
+                content: "Success - Interview question posted.",
+                action: <Button href="/index.html" variant="link">View questions</Button>,
+                dismissible: true,
+                dismissLabel: "Dismiss message",
+                onDismiss: () => setItems([]),
+                id: "message_1"
+              }])
 
           } else {
               // Handle error response
