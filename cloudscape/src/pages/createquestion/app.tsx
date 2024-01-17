@@ -96,6 +96,7 @@ export default function App() {
               setQuestion_type(QUESTION_TYPE_OPTIONS[0].value)
               setQuestion('');
               SetAnswer('');
+              setItems(items)
 
           } else {
               // Handle error response
@@ -130,7 +131,7 @@ export default function App() {
         }
       >
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit} 
         >
           <Form
             actions={
@@ -145,6 +146,7 @@ export default function App() {
             }
           >
             <SpaceBetween size="l">
+            <Flashbar items={items}/>
               <Container header={<Header variant="h2">Role Details</Header>}>
                 <SpaceBetween direction="vertical" size="l">
                   <FormField 
@@ -212,9 +214,6 @@ export default function App() {
                         />
                   </FormField>
                 </SpaceBetween>
-              </Container>
-              <Container>
-                <Flashbar items={items}/>
               </Container>
               </SpaceBetween>
           </Form>
