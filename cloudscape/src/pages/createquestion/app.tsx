@@ -6,21 +6,14 @@ import HelpPanel from '@cloudscape-design/components/help-panel';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import FormField from '@cloudscape-design/components/form-field';
-// import Tiles from '@cloudscape-design/components/tiles';
 import Container from '@cloudscape-design/components/container';
-// import Multiselect, { MultiselectProps } from '@cloudscape-design/components/multiselect';
 import RadioGroup from '@cloudscape-design/components/radio-group';
-// import Textarea from '@cloudscape-design/components/textarea';
-// import ColumnLayout from '@cloudscape-design/components/column-layout';
 import Input from '@cloudscape-design/components/input';
-// import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Flashbar from "@cloudscape-design/components/flashbar";
-
 
 import Breadcrumbs from '../../components/breadcrumbs';
 import Navigation from '../../components/navigation';
 import ShellLayout from '../../layouts/shell';
-// import axios from 'axios';
 
 import {
   LEVEL_OPTIONS,
@@ -33,6 +26,7 @@ const isEmptyString = (value: string) => !value?.length;
 type MessageDefinition = {
   type?: "success" | "error" | "info" | "warning"; // Adjust based on the expected types
   content: string;
+  header?: string;
   action?: React.ReactNode;
   dismissible?: boolean;
   dismissLabel?: string;
@@ -57,11 +51,7 @@ export default function App() {
     const [question_type, setQuestion_type] = useState(QUESTION_TYPE_OPTIONS[0].value);
     const [question, setQuestion] = useState('');
     const [answer, SetAnswer] = useState('');
-    // const [items, setItems] = React.useState<FlashItem[]>([]);
     const [items, setItems] = React.useState<MessageDefinition[]>([]);
-
-    // const [successMessage, setSuccessMessage] = useState('');
-    // const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (event:  React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -87,11 +77,6 @@ export default function App() {
           if (response.ok) {
               // Handle successful response
               console.log('PUT request successful');
-
-              // setItems([successMessage]);
-
-              // setSuccessMessage('Form submitted successfully');
-              // setErrorMessage('');
               setLevel(LEVEL_OPTIONS[0].value);
               setJob_role(ROLE_OPTIONS[0].value);
               setQuestion_type(QUESTION_TYPE_OPTIONS[0].value)
@@ -110,8 +95,15 @@ export default function App() {
           } else {
               // Handle error response
               console.error('PUT request failed');
-              // setErrorMessage('Failed to submit the form. Please try again');
-              // setSuccessMessage('');
+              setItems([{
+                type: "error" as const,
+                header: 'Failed to post question',
+                content: "Please try again",
+                dismissible: true,
+                dismissLabel: "Dismiss message",
+                onDismiss: () => setItems([]),
+                id: "message_2"
+              }])
           }
 
       } catch (error) {
