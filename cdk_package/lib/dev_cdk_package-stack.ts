@@ -16,17 +16,11 @@ import * as path from 'path';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as target from 'aws-cdk-lib/aws-route53-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment'
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as cw from 'aws-cdk-lib/aws-cloudwatch';
 import { Construct } from 'constructs';
 import { Rule } from 'aws-cdk-lib/aws-events';
 
-// export interface ServiceStageProps extends StackProps {
-//     readonly stageName: string;
-// }
-
-// To Do:
-// - Add CloudWatch Logging for API gateway, Lambdas, DynamoDB
-// - Write more unit tests??? Possibly for API?
 
 export class DevCdkPackageStack extends Stack {
 
@@ -108,27 +102,33 @@ export class DevCdkPackageStack extends Stack {
 
         bucket.grantRead(oai);
 
+        const logGroup = new logs.LogGroup(this, "DevLogs")
+
         const api = new apigateway.RestApi(this, 'samilafo-qg-api', {
             restApiName: 'DEVsamilafo-qg-api',
             defaultCorsPreflightOptions: {
                 allowOrigins: ["https://dev.qwizguru.samilafo.people.aws.dev", "http://localhost:8081/"],
                 allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
                 allowMethods: ["OPTIONS", "GET", "POST", "PUT", "DELETE"]
+            },
+            deployOptions: {
+                accessLogDestination: new apigateway.LogGroupLogDestination(logGroup),
+                accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields({
+                    caller: false,
+                    httpMethod: true,
+                    ip: true,
+                    protocol: true,
+                    requestTime: true,
+                    resourcePath: true,
+                    responseLength: true,
+                    status: true,
+                    user: true,
+                  }),
             }
         });
 
         const putlambdaintegration = new apigateway.LambdaIntegration(putFunction);
         const getlambdaintegration = new apigateway.LambdaIntegration(getFunction);
-
-        // Supernova role
-        // new iam.Role(this, "SuperNovaRole", {
-        //     roleName: "Nova-DO-NOT-DELETE",
-        //     assumedBy: new iam.ServicePrincipal("nova.aws.internal"),
-        //     managedPolicies: [
-        //         iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonRoute53FullAccess"),
-        //         iam.ManagedPolicy.fromAwsManagedPolicyName("SecurityAudit")
-        //     ]
-        // });
 
         // input your own domain name here. 
         const hosted_zone_name = 'samilafo.people.aws.dev'
@@ -218,17 +218,7 @@ export class DevCdkPackageStack extends Stack {
             domainName: qwiz_distribution_zone_name,
             hostedZone: distribution_hosted_sub_zone,
             region: 'us-east-1',
-            // validation: acm.CertificateValidation.fromDns(distribution_hosted_sub_zone)
         });
-
-        // bucket created to host the cloudscape code for the website
-        // const s3_bucket = new s3.Bucket(this, 'samilafo-qwiz-bucket', {
-        //    blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-        // });
-
-        // const cfoai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwiz-oai');
-
-        // bucket.grantRead(cfoai);
 
         const distribution = new cloudfront.Distribution(this, 'dev_samilafo_qwizguru_cloudfront', {
             defaultBehavior: {
@@ -283,39 +273,11 @@ export class DevCdkPackageStack extends Stack {
             ttl: cdk.Duration.minutes(5)
         });
 
-
-        /*
-        commented out sections re cognito
-
-        this links pre-exisitng cognito user pool to a Cognito API Authorizer
-
-        for each api resource method, need to declare this as so:
-
-        {
-        //     authorizer: <api auth const name>,
-        //     authprizaionType: apigateway.AuthorizationType.COGNITO,
-        // }
-
-        */
-
-        // // cognito authZ for user pool already created
-
-        // const qwizUserPool = cognito.UserPool.fromUserPoolId(this, 'user_pool_id', 'eu-west-2_Gzt3IyXug')
-
-        // const apiAuth = new apigateway.CognitoUserPoolsAuthorizer(this, 'apiAuthoriser', {
-        //     cognitoUserPools: [qwizUserPool]
-        // })
-
         const putresource = api.root.addResource("put-question");
         putresource.addMethod("PUT", putlambdaintegration);
 
         const getresource = api.root.addResource("question");
         getresource.addMethod("GET", getlambdaintegration);
-
-        // {
-        //     authorizer: apiAuth,
-        //     authprizaionType: apigateway.AuthorizationType.COGNITO,
-        // }
 
         // cloudTrail
         const key = new kms.Key(this, 'cloudTrailKey', {
@@ -324,7 +286,7 @@ export class DevCdkPackageStack extends Stack {
 
         key.grantEncrypt(new iam.ServicePrincipal('cloudtrail.amazonaws.com'));
 
-        const topic = new sns.Topic(this, 'APIEvents')
+        const topic = new sns.Topic(this, 'QwizEvents')
         const trail = new cloudtrail.Trail(this, 'CloudTrail', {
             snsTopic: topic,
             sendToCloudWatchLogs: true,
@@ -333,11 +295,6 @@ export class DevCdkPackageStack extends Stack {
             encryptionKey: key
         });
     };
-    // private Authorizer(stack: Stack) {
-    //     new apigateway.CognitoUserPoolsAuthorizer(this, 'apiAuthoriser', {
-    //         cognitoUserPools: [qwizUserPool] // Userpool not yet defined.
-    //     })
-    // }
 };
 
 
