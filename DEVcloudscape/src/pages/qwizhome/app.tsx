@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 import React from 'react';
-import HelpPanel from '@cloudscape-design/components/help-panel';
+import HelpPanel from '../qwizhome/components/helppanel';
 
 import Breadcrumbs from '../../components/breadcrumbs';
 import Navigation from '../../components/navigation';
@@ -16,7 +16,7 @@ export default function App() {
       contentType="table"
       breadcrumbs={<Breadcrumbs active={{ text: 'Questions', href: '/qwizhome/index.html' }} />}
       navigation={<Navigation />}
-      tools={<HelpPanel header={<h2>Help panel</h2>}></HelpPanel>}
+      tools={<HelpPanel></HelpPanel>}
     >
       <VariationsTable />
     </ShellLayout>

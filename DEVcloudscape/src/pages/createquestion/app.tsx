@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '@cloudscape-design/components/button';
 import Form from '@cloudscape-design/components/form';
 import Header from '@cloudscape-design/components/header';
-import HelpPanel from '@cloudscape-design/components/help-panel';
+import HelpPanel from '../qwizhome/components/helppanel';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import FormField from '@cloudscape-design/components/form-field';
@@ -119,7 +119,7 @@ export default function App() {
       contentType="form"
       breadcrumbs={<Breadcrumbs active={{ text: 'Create question', href: '/createquestion/index.html' }} />}
       navigation={<Navigation/>}
-      tools={<HelpPanel header={<h2>Help panel</h2>} />}
+      tools={<HelpPanel/>}
     >
       <ContentLayout
         header={

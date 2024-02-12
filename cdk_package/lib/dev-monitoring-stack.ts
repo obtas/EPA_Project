@@ -8,6 +8,9 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { title } from 'process';
 
+// To Do:
+// - Add CloudWatch Alarms
+
 export class DevMonitoringStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);

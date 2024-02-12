@@ -17,8 +17,6 @@ import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
-
-
 const getFilterCounterText = (count = 0) => `${count} ${count === 1 ? 'match' : 'matches'}`;
 const getHeaderCounterText = (items: readonly Questions[] = [], selectedItems: readonly Questions[] = []) => {
   return selectedItems && selectedItems.length > 0 ? `(${selectedItems.length}/${items.length})` : `(${items.length})`;
@@ -96,7 +94,7 @@ export default function VariationTable() {
             <EmptyState
                 title="No matches"
                 subtitle="We can’t find a question that matches that criteria."
-                action={<Button onClick={() => actions.setFiltering('')}>Clear filter</Button>}
+              action={<Button onClick={() => actions.setFiltering('')}>Clear filter</Button>}
             />
         ),
         empty: (
@@ -142,7 +140,7 @@ export default function VariationTable() {
       filter={
         <TextFilter
             {...filterProps}
-            filteringPlaceholder="Find flavors"
+            filteringPlaceholder="Find Questions"
             countText={getFilterCounterText(filteredItemsCount)}
         />
       }

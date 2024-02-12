@@ -24,6 +24,10 @@ import { Rule } from 'aws-cdk-lib/aws-events';
 //     readonly stageName: string;
 // }
 
+// To Do:
+// - Add CloudWatch Logging for API gateway, Lambdas, DynamoDB
+// - Write more unit tests??? Possibly for API?
+
 export class DevCdkPackageStack extends Stack {
 
     public readonly cloudfrontAddress: cdk.CfnOutput;
