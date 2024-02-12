@@ -111,6 +111,7 @@ export class DevCdkPackageStack extends Stack {
                 allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
                 allowMethods: ["OPTIONS", "GET", "POST", "PUT", "DELETE"]
             },
+            cloudWatchRole: true,
             deployOptions: {
                 accessLogDestination: new apigateway.LogGroupLogDestination(logGroup),
                 accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields({
