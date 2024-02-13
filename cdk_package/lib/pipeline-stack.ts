@@ -44,7 +44,7 @@ export class QwizPipelineStack extends cdk.Stack {
         });
 
         const dev_stage = pipeline.addStage(new DevStage(this, "Dev", {
-            env: { account: '937836275043', region: 'us-west-2'}
+            env: { account: '##############', region: 'us-west-2'}
         }));
 
         dev_stage.addPre(new ShellStep("ValidationAndUnitTests", {
@@ -59,7 +59,7 @@ export class QwizPipelineStack extends cdk.Stack {
             ]
         }))
         const prod_stage = pipeline.addStage(new ProdStage(this, "Prod", {
-            env: { account: '522253859401', region: 'us-west-2'}
+            env: { account: '###############', region: 'us-west-2'}
         }));
 
         prod_stage.addPre(new ShellStep("ValidationAndUnitTests", {
