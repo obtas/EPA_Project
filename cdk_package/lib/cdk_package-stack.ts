@@ -79,7 +79,7 @@ export class CdkPackageStack extends Stack {
 
         table.grantReadWriteData(putFunction)
 
-        const bucket = new s3.Bucket(this, 'samilafo-qwizgurus-bucket', {
+        const bucket = new s3.Bucket(this, '####################', {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         });
 
