@@ -15,10 +15,10 @@ export class DevMonitoringStack extends Stack {
             dashboardName: 'DevQwizGuruDashboard',
         });
 
-        const accountid = '937836275043'
+        const accountid = '###############'
 
 
-        const email = "samilafo@amazon.co.uk"
+        const email = "################"
 
         const topic = new sns.Topic(this, "AlarmTopics")
         
