@@ -17,9 +17,9 @@ export class MonitoringStack extends Stack {
             dashboardName: 'QwizGuruDashboard',
         });
 
-        const accountid = '522253859401'
+        const accountid = '#############'
 
-        const email = "samilafo@amazon.co.uk"
+        const email = "##################"
 
         const topic = new sns.Topic(this, "AlarmTopics")
         
