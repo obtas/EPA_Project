@@ -16,7 +16,7 @@ export default function App() {
       contentType="table"
       breadcrumbs={<Breadcrumbs active={{ text: 'Questions', href: '/qwizhome/index.html' }} />}
       navigation={<Navigation />}
-      tools={<HelpPanel></HelpPanel>}
+      tools={<HelpPanel/>}
     >
       <VariationsTable />
     </ShellLayout>

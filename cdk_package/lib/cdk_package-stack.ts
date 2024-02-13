@@ -20,10 +20,6 @@ import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs';
 import { Rule } from 'aws-cdk-lib/aws-events';
 
-// export interface ServiceStageProps extends StackProps {
-//     readonly stageName: string;
-// }
-
 export class CdkPackageStack extends Stack {
 
     public readonly cloudfrontAddress: cdk.CfnOutput;
@@ -116,17 +112,7 @@ export class CdkPackageStack extends Stack {
         const putlambdaintegration = new apigateway.LambdaIntegration(putFunction);
         const getlambdaintegration = new apigateway.LambdaIntegration(getFunction);
 
-        // Supernova role
-        // new iam.Role(this, "SuperNovaRole", {
-        //     roleName: "Nova-DO-NOT-DELETE",
-        //     assumedBy: new iam.ServicePrincipal("nova.aws.internal"),
-        //     managedPolicies: [
-        //         iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonRoute53FullAccess"),
-        //         iam.ManagedPolicy.fromAwsManagedPolicyName("SecurityAudit")
-        //     ]
-        // });
-
-        // input your own domain name here. 
+        // input your domain name here. 
         const hosted_zone_name = 'samilafo.people.aws.dev'
         const hostedZoneID = 'Z05535893TMZP0FHIG5QY'
         const novaCrossDNSRole = 'arn:aws:iam::522253859401:role/CrossDNSDelegationRole-DO-NOT-DELETE'
@@ -154,7 +140,6 @@ export class CdkPackageStack extends Stack {
         const api_ssl_cert = new acm.Certificate(this, 'CertDist', {
             domainName: qwiz_api_zone_name,
             certificateName: 'qwiz-API-SSL-Cert',
-            // hostedZone: api_hosted_subdomain_zone,
             validation: acm.CertificateValidation.fromDns(api_hosted_subdomain_zone)
         });
 
@@ -217,15 +202,6 @@ export class CdkPackageStack extends Stack {
             // validation: acm.CertificateValidation.fromDns(distribution_hosted_sub_zone)
         });
 
-        // bucket created to host the cloudscape code for the website
-        // const s3_bucket = new s3.Bucket(this, 'samilafo-qwiz-bucket', {
-        //    blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-        // });
-
-        // const cfoai = new cloudfront.OriginAccessIdentity(this, 'samilafo-qwiz-oai');
-
-        // bucket.grantRead(cfoai);
-
         const distribution = new cloudfront.Distribution(this, 'samilafo_qwizguru_cloudfront', {
             defaultBehavior: {
                 origin: new origin.S3Origin(bucket, {
@@ -279,39 +255,11 @@ export class CdkPackageStack extends Stack {
             ttl: cdk.Duration.minutes(5)
         });
 
-
-        /*
-        commented out sections re cognito
-
-        this links pre-exisitng cognito user pool to a Cognito API Authorizer
-
-        for each api resource method, need to declare this as so:
-
-        {
-        //     authorizer: <api auth const name>,
-        //     authprizaionType: apigateway.AuthorizationType.COGNITO,
-        // }
-
-        */
-
-        // // cognito authZ for user pool already created
-
-        // const qwizUserPool = cognito.UserPool.fromUserPoolId(this, 'user_pool_id', 'eu-west-2_Gzt3IyXug')
-
-        // const apiAuth = new apigateway.CognitoUserPoolsAuthorizer(this, 'apiAuthoriser', {
-        //     cognitoUserPools: [qwizUserPool]
-        // })
-
         const putresource = api.root.addResource("put-question");
         putresource.addMethod("PUT", putlambdaintegration);
 
         const getresource = api.root.addResource("question");
         getresource.addMethod("GET", getlambdaintegration);
-
-        // {
-        //     authorizer: apiAuth,
-        //     authprizaionType: apigateway.AuthorizationType.COGNITO,
-        // }
 
         // cloudTrail
         const key = new kms.Key(this, 'cloudTrailKey', {
@@ -329,11 +277,6 @@ export class CdkPackageStack extends Stack {
             encryptionKey: key
         });
     };
-    // private Authorizer(stack: Stack) {
-    //     new apigateway.CognitoUserPoolsAuthorizer(this, 'apiAuthoriser', {
-    //         cognitoUserPools: [qwizUserPool] // Userpool not yet defined.
-    //     })
-    // }
 };
 
 

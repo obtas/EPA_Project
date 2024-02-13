@@ -3,10 +3,10 @@ import { Construct } from 'constructs';
 import * as cdk from 'aws-cdk-lib';
 import * as cw from 'aws-cdk-lib/aws-cloudwatch';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-// import * lambda from 'aws-cdk-lib/aws-lambda';
-// import * apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { title } from 'process';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as cw_actions from 'aws-cdk-lib/aws-cloudwatch-actions';
 
 export class MonitoringStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
@@ -18,6 +18,17 @@ export class MonitoringStack extends Stack {
         });
 
         const accountid = '522253859401'
+
+        const email = "samilafo@amazon.co.uk"
+
+        const topic = new sns.Topic(this, "AlarmTopics")
+        
+        const subscription = new sns.Subscription(this, 'AlarmSubscription', {
+            topic,
+            endpoint: email,
+            protocol: sns.SubscriptionProtocol.EMAIL,
+
+        })
 
         const putlambdaInvocations = new cw.Metric({
             statistic: 'sum',
@@ -74,6 +85,15 @@ export class MonitoringStack extends Stack {
             account: accountid
         })
 
+        const putErrorsAlarm = new cw.Alarm(this, 'put-errors-alarm', {
+            metric: putlambdaInvocations,
+            threshold: 2,
+            evaluationPeriods: 2,
+            comparisonOperator: cw.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD
+          });
+
+        putErrorsAlarm.addAlarmAction(new cw_actions.SnsAction(topic))
+
         const getlambdaErrors = new cw.Metric({
             statistic: 'sum',
             namespace: 'AWS/Lambda',
@@ -84,6 +104,15 @@ export class MonitoringStack extends Stack {
             label: 'get errors',
             account: accountid
         })
+
+        const getErrorsAlarm = new cw.Alarm(this, 'get-errors-alarm', {
+            metric: putlambdaInvocations,
+            threshold: 2,
+            evaluationPeriods: 2,
+            comparisonOperator: cw.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD
+          });
+        
+        getErrorsAlarm.addAlarmAction(new cw_actions.SnsAction(topic))
 
         const DDBUserErrors = new cw.Metric({
             statistic: 'sum',
@@ -109,6 +138,15 @@ export class MonitoringStack extends Stack {
             account: accountid
         })
 
+        const api4xxErrorsAlarm = new cw.Alarm(this, 'api4xx-errors-alarm', {
+            metric: API4XXError,
+            threshold: 2,
+            evaluationPeriods: 2,
+            comparisonOperator: cw.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD
+          });
+        
+        api4xxErrorsAlarm.addAlarmAction(new cw_actions.SnsAction(topic))
+
         const API5XXError = new cw.Metric({
             statistic: 'sum',
             namespace: 'AWS/APIGateway',
@@ -116,6 +154,15 @@ export class MonitoringStack extends Stack {
             label: 'api 5XX errors',
             account: accountid
         })
+
+        const api5xxErrorsAlarm = new cw.Alarm(this, 'api5xx-errors-alarm', {
+            metric: API5XXError,
+            threshold: 2,
+            evaluationPeriods: 2,
+            comparisonOperator: cw.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD
+          });
+        
+        api5xxErrorsAlarm.addAlarmAction(new cw_actions.SnsAction(topic))
 
         const APICount = new cw.Metric({
             statistic: 'sum',
