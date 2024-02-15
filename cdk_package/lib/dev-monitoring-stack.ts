@@ -16,8 +16,7 @@ export class DevMonitoringStack extends Stack {
         });
 
         const accountid = '###############'
-
-
+        
         const email = "################"
 
         const topic = new sns.Topic(this, "AlarmTopics")

@@ -12,7 +12,7 @@ const client = new DynamoDBClient({})
 
 const dynamo = DynamoDBDocumentClient.from(client);
 
-const tableName = "qwizgurus_interview_table_uswest2";
+const tableName = "{TABLE_NAME}";
 
 // @ts-nocheck 
 export const handler = async (event: any) => {
@@ -20,7 +20,7 @@ export const handler = async (event: any) => {
   let statusCode = 200;
   const headers = {
     "Content-Type": "application/json",
-    'Access-Control-Allow-Origin': "https://qwizguru.samilafo.people.aws.dev",
+    'Access-Control-Allow-Origin': "{PROD_URL}",
     'Access-Control-Allow-Methods': "OPTIONS, GET, POST , PUT, DELETE",
     'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent"
   };

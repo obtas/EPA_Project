@@ -28,8 +28,8 @@ export class CdkPackageStack extends Stack {
         super(scope, id, props);
 
         //  dynamodb table
-        const table = new ddb.Table(this, 'qwizgurus_interview_table_uswest2', {
-            tableName: 'qwizgurus_interview_table_uswest2',
+        const table = new ddb.Table(this, '{TABLE_NAME}', {
+            tableName: '{TABLE_NAME}',
             partitionKey: {
                 name: 'level',
                 type: ddb.AttributeType.STRING,
@@ -79,18 +79,18 @@ export class CdkPackageStack extends Stack {
 
         table.grantReadWriteData(putFunction)
 
-        const bucket = new s3.Bucket(this, '####################', {
+        const bucket = new s3.Bucket(this, '{BUCKET_NAME}', {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
         });
 
         bucket.addCorsRule({
-            allowedOrigins: ["https://qwizguru.samilafo.people.aws.dev", "https://samilafo-qwiz-api.samilafo.people.aws.dev"],
+            allowedOrigins: ["{DOMAIN_NAME}", "{PROD_API}"],
             allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.POST],
             allowedHeaders: ["*"],
             exposedHeaders: ["Access-Control-Allow-Origin"]
         })
 
-        const deployment = new s3deploy.BucketDeployment(this, 'DeployWebsite', {
+        const deployment = new s3deploy.BucketDeployment(this, '{DEPLOYMENT_BUCKET}', {
             sources: [s3deploy.Source.asset(path.join(__dirname, '../../cloudscape'))],
             destinationBucket: bucket,
             memoryLimit: 1024,
@@ -100,10 +100,10 @@ export class CdkPackageStack extends Stack {
 
         bucket.grantRead(oai);
 
-        const api = new apigateway.RestApi(this, 'samilafo-qg-api', {
-            restApiName: 'samilafo-qg-api',
+        const api = new apigateway.RestApi(this, '{REST_API_NAME}', {
+            restApiName: '{REST_API_NAME}',
             defaultCorsPreflightOptions: {
-                allowOrigins: ["https://qwizguru.samilafo.people.aws.dev", "http://localhost:8081/"],
+                allowOrigins: ["{DOMAIN_NAME}", "{LOCAL_HOST}"],
                 allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
                 allowMethods: ["OPTIONS", "GET", "POST", "PUT", "DELETE"]
             }
@@ -113,9 +113,9 @@ export class CdkPackageStack extends Stack {
         const getlambdaintegration = new apigateway.LambdaIntegration(getFunction);
 
         // input your domain name here. 
-        const hosted_zone_name = 'samilafo.people.aws.dev'
-        const hostedZoneID = 'Z05535893TMZP0FHIG5QY'
-        const novaCrossDNSRole = 'arn:aws:iam::522253859401:role/CrossDNSDelegationRole-DO-NOT-DELETE'
+        const hosted_zone_name = '{HOSTED_ZONE_NAME}'
+        const hostedZoneID = '{HOSTED_ZONE_ID}'
+        const novaCrossDNSRole = '{NOVACROSS_ROLE_ARN}'
 
         // constructing the api url with the domain name
         const qwiz_api_zone_name = 'samilafo-qwiz-api.' + hosted_zone_name
@@ -155,7 +155,7 @@ export class CdkPackageStack extends Stack {
            zone: api_hosted_subdomain_zone,
            recordName: qwiz_api_zone_name,
            values: ['v=spf1 -all'],
-           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+           comment: '########################################'
         });
 
         // creating text records for security
@@ -163,8 +163,8 @@ export class CdkPackageStack extends Stack {
         new route53.TxtRecord(this, 'api_domain_txt_record', {
            zone: api_hosted_subdomain_zone,
            recordName: '_dmarc.' + qwiz_api_zone_name,
-           values: ['v=DMARC1; p=reject; rua=mailto:report@dmarc.amazon.com; ruf=mailto:report@dmarc.amazon.com'],
-           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+           values: ['########################################'],
+           comment: '########################################'
         });
 
         // A record and Aaaa record for api
@@ -230,7 +230,7 @@ export class CdkPackageStack extends Stack {
            zone: distribution_hosted_sub_zone,
            recordName: qwiz_distribution_zone_name,
            values: ['v=spf1 -all'],
-           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+           comment: '#################################'
         });
 
         // creating text records for security
@@ -238,8 +238,8 @@ export class CdkPackageStack extends Stack {
         new route53.TxtRecord(this, 'distribution_domain_txt_record', {
            zone: distribution_hosted_sub_zone,
            recordName: '_dmarc.' + qwiz_distribution_zone_name,
-           values: ['v=DMARC1; p=reject; rua=mailto:report@dmarc.amazon.com; ruf=mailto:report@dmarc.amazon.com'],
-           comment: 'https://w.amazon.com/bin/view/SuperNova/PreventEmailSpoofing/'
+           values: ['###########################################################'],
+           comment: '##################################################'
         });
 
         // A records / aaaa records
@@ -273,7 +273,7 @@ export class CdkPackageStack extends Stack {
             snsTopic: topic,
             sendToCloudWatchLogs: true,
             cloudWatchLogsRetention: logs.RetentionDays.FOUR_MONTHS,
-            trailName: 'samilafo-Qwiz-Events',
+            trailName: '{TRAIL_NAME}',
             encryptionKey: key
         });
     };
